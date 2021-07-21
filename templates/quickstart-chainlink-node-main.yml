@@ -455,8 +455,8 @@ Resources:
     Properties:
       TemplateURL: 
         !Sub
-          # - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template.yaml'
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/quickstart-aws-vpc/templates/aws-vpc.template.yaml'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template.yaml'
+          #- 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/quickstart-aws-vpc/templates/aws-vpc.template.yaml'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
@@ -475,8 +475,8 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-          # - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/quickstart-chainlink-node-workload.yml'
-          - 'https://quickstart-chainlink-node-test-bucket.s3.us-east-1.amazonaws.com/quickstart-chainlink-node/templates/quickstart-chainlink-node-workload.yml'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/quickstart-chainlink-node-workload.yml'
+          #- 'https://quickstart-chainlink-node-test-bucket.s3.us-east-1.amazonaws.com/quickstart-chainlink-node/templates/quickstart-chainlink-node-workload.yml'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:

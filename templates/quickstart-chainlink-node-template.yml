@@ -269,8 +269,8 @@ Resources:
       AWS::CloudFormation::Authentication:
         S3AccessCreds:
           type: S3
-          buckets: quickstart-chainlink-node-test-bucket
-          # buckets: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+          #buckets: quickstart-chainlink-node-test-bucket
+          buckets: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
           roleName:
             Ref: ChainlinkNodeRole
       AWS::CloudFormation::Init:
