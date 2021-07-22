@@ -1,4 +1,12 @@
-# Start a Chainlink Node
+## quickstart-chainlink-chainlink-node—Quick Start
+
+For architectural details, step-by-step instructions, and customization options, see the [deployment guide](https://aws-quickstart.github.io/quickstart-chainlink-chainlink-node/).
+
+To post feedback, submit feature ideas, or report bugs, use the **Issues** section of this GitHub repo.
+
+To submit code for this Quick Start, see the [AWS Quick Start Contributor's Kit](https://aws-quickstart.github.io/).
+
+## Start a Chainlink Node
 
 Deploying this Quick Start will create highly available Chainlink nodes using with default parameters and a provided blockchain.
 
@@ -32,10 +40,41 @@ CIDR blocks, instance types, database instance types, and environment variables,
 2. Create a public certificate using Amazon Certificate Manager in your preferred region.
 3. If using an existing VPC, make sure that it contains two public subnets, two private subnets, internet gateway, NAT gateways, and route tables.
 
-## quickstart-chainlink-chainlink-node—Quick Start
+## Manually creating env, api, and password files
 
-For architectural details, step-by-step instructions, and customization options, see the [deployment guide](https://aws-quickstart.github.io/quickstart-chainlink-chainlink-node/).
+1. Run create-env.sh to create the environment variable file for your Chainlink node
 
-To post feedback, submit feature ideas, or report bugs, use the **Issues** section of this GitHub repo.
+### Blockchain Networks:
 
-To submit code for this Quick Start, see the [AWS Quick Start Contributor's Kit](https://aws-quickstart.github.io/).
+- ETH-Mainnet
+- Kovan-ETH-Testnet
+- Rinkeby-ETH-Testnet
+- xDai-Mainnet
+- Heco-Mainnet
+- BSC-Mainnet
+- Matic-Mainnet
+
+```
+./.chainlink/create-env.sh \
+<blockchain network> \
+<ethereum websocket endpoint> \
+<postgresql username> \
+<postgresql password> \
+<postgresql hostname> \
+<postgresql port number> \
+<postgresql database name>
+```
+
+2. Run create-password.sh to create your Chainlink node keystore password file
+
+```
+./.chainlink/create-password.sh \
+<your keystore password>
+```
+
+Password Requirements:
+
+- 3 lowercase characters
+- 3 uppercase characters
+- 3 numbers
+- 3 special characters
