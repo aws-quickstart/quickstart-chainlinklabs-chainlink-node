@@ -55,26 +55,34 @@ CIDR blocks, instance types, database instance types, and environment variables,
 - Matic-Mainnet
 
 ```
-./.chainlink/create-env.sh \
-<blockchain network> \
-<ethereum websocket endpoint> \
-<postgresql username> \
-<postgresql password> \
-<postgresql hostname> \
-<postgresql port number> \
-<postgresql database name>
+cd $HOME/.chainlink/ && ./create-env.sh \
+${chainNetwork} \
+${ethUrl} \
+${psqlUser} \
+$(aws secretsmanager get-secret-value --secret-id DBSecret --query "SecretString" --output text) \
+${psqlHostname} \
+${psqlPort} \
+${psqlDb}
 ```
 
 2. Run create-password.sh to create your Chainlink node keystore password file
 
 ```
-./.chainlink/create-password.sh \
-<your keystore password>
+cd $HOME/.chainlink/ && ./create-password.sh \
+$(aws secretsmanager get-secret-value --secret-id WalletSecret --query "SecretString" --output text)
 ```
 
-Password Requirements:
+## Running Chainlink node Docker instance
 
-- 3 lowercase characters
-- 3 uppercase characters
-- 3 numbers
-- 3 special characters
+```
+latestimage=$(curl -s -S "https://registry.hub.docker.com/v2/repositories/smartcontract/chainlink/tags/" | jq -r '."results"[]["name"]' | head -n 1)
+cd /home/ec2-user/.chainlink && docker run -d \
+--log-driver=awslogs \
+--log-opt awslogs-group=ChainlinkLogs \
+--restart unless-stopped \
+--name chainlink \
+-p 6688:6688 \
+-v /home/ec2-user/.chainlink:/chainlink \
+--env-file=/home/ec2-user/.chainlink/.env  smartcontract/chainlink:$latestimage local n \
+-p /chainlink/.password
+```
