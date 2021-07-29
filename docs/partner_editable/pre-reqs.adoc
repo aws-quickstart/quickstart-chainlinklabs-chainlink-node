@@ -2,12 +2,16 @@
 
 ==== Prepare your AWS account
 
-_Describe any setup required in the AWS account prior to template launch_
+1. If you don’t already have an AWS account, create one at https://aws.amazon.com by
+following the on-screen instructions.
+2. Create a key pair in your preferred region.
+3. Create a public certificate using Amazon Certificate Manager in your preferred region.
+4. If using an existing VPC, make sure that it contains two public subnets, two private subnets, internet gateway, NAT gateways, and route tables.
 
-==== Prepare your {partner-company-name} account
+//==== Prepare your {partner-company-name} account
 
-_Describe any setup required in the partner portal/account prior to template launch_
+//_Describe any setup required in the partner portal/account prior to template launch_
 
-==== Prepare for the deployment
+//==== Prepare for the deployment
 
-_Describe any preparation required to complete the product build, such as obtaining licenses or placing files in S3_
+//_Describe any preparation required to complete the product build, such as obtaining licenses or placing files in S3_
