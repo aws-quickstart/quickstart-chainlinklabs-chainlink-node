@@ -60,7 +60,7 @@ Metadata:
       - Label:
           default: AWS DevOps Guru
         Parameters:
-          - EnableAWSDevOpsGuru
+          - EnableAmazonDevOpsGuru
           - AdministratorAccountId
           - EmailAddress
           - SnsTopicName
@@ -139,8 +139,8 @@ Metadata:
         default: Database master password
       DBPort:
         default: Database port
-      EnableAWSDevOpsGuru:
-        default: AWS DevOps Guru
+      EnableAmazonDevOpsGuru:
+        default: Amazon DevOps Guru
       AdministratorAccountId:
         Default: AWS Administrator account ID
       EmailAddress:
@@ -340,9 +340,9 @@ Parameters:
     NoEcho: 'True'
     Type: String
   BlockchainNodeUrl:
-    Default: 'wss://ethUrl'
+    Default: 'wss://blockchainNodeEndpoint'
     Description: 'Please provide websocket endpoint for a Blockchain node'
-    MaxLength: '128'
+    MaxLength: '240'
     MinLength: '6'
     Type: String
   NodeWalletPassword:
@@ -426,24 +426,27 @@ Parameters:
     ConstraintDescription: 'Must be in the range [1150-65535].'
     MinValue: 1150
     MaxValue: 65535
-  EnableAWSDevOpsGuru:
+  EnableAmazonDevOpsGuru:
     AllowedValues:
       - 'true'
       - 'false'
     Default: 'false'
-    Description: 'Enable AWS DevOps Guru'
+    Description: 'Enable Amazon DevOps Guru'
     Type: String
   AdministratorAccountId:
     Type: String
     Description: AWS Account Id of the administrator account (the account in which StackSets will be created) - AWS DevOps Guru.
     MaxLength: 12
     MinLength: 12
+    Default: '123456789000'
   EmailAddress:
     Description: Email address for SNS subscription  - AWS DevOps Guru.
     Type: String
+    Default: user@email.com
   SnsTopicName:
     Type: String
     Description: Name of SNS Topic  - AWS DevOps Guru.
+    Default: 'AWS DevOps Guru - Chainlink Node QuickStart'
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: The Quick Start bucket name can include numbers, lowercase
@@ -565,7 +568,7 @@ Resources:
         EnableTCPForwarding: !Ref EnableTCPForwarding
         EnableX11Forwarding: !Ref EnableX11Forwarding
         SSLCertificateARN: !Ref SSLCertificateARN
-        EnableAWSDevOpsGuru: !Ref EnableAWSDevOpsGuru
+        EnableAmazonDevOpsGuru: !Ref EnableAmazonDevOpsGuru
         AdministratorAccountId: !Ref AdministratorAccountId
         EmailAddress: !Ref EmailAddress
         SnsTopicName: !Ref SnsTopicName

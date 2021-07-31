@@ -40,7 +40,7 @@ Metadata:
       - Label:
           default: AWS DevOps Guru
         Parameters:
-          - EnableAWSDevOpsGuru
+          - EnableAmazonDevOpsGuru
           - AdministratorAccountId
           - EmailAddress
           - SnsTopicName
@@ -93,8 +93,8 @@ Metadata:
         default: Database port
       DBHostname:
         Default: Database hostname
-      EnableAWSDevOpsGuru:
-        default: AWS DevOps Guru
+      EnableAmazonDevOpsGuru:
+        default: Amazon DevOps Guru
       AdministratorAccountId:
         Default: AWS Administrator account ID
       EmailAddress:
@@ -219,11 +219,11 @@ Parameters:
   DBHostname:
     Description: 'The Amazon Aurora PostgreSQL database hostname.'
     Type: String
-  EnableAWSDevOpsGuru:
+  EnableAmazonDevOpsGuru:
     AllowedValues:
       - 'true'
       - 'false'
-    Description: 'Enable AWS DevOps Guru'
+    Description: 'Enable Amazon DevOps Guru'
     Type: String
   AdministratorAccountId:
     Type: String
@@ -274,8 +274,8 @@ Conditions:
   UsingDefaultBucket: !Equals
     - !Ref QSS3BucketName
     - 'aws-quickstart'
-  UsingAWSDevOpsGuru: !Equals
-    - !Ref EnableAWSDevOpsGuru
+  UsingAmazonDevOpsGuru: !Equals
+    - !Ref EnableAmazonDevOpsGuru
     - 'true'
 Resources:
   ChainlinkNodeAutoScalingGroup:
@@ -573,15 +573,20 @@ Resources:
                   - 'logs:PutLogEvents'
                   - 'logs:DescribeLogStreams'
                 Resource:
-                  - arn:aws:logs:*:*:*
+                  - !Sub arn:${AWS::Partition}:logs:*:*:*
               - Effect: Allow
                 Action:
                   - 'cloudwatch:PutMetricData'
                   - 'cloudwatch:GetMetricStatistics'
                   - 'cloudwatch:ListMetrics'
-                  - 'ec2:DescribeInstances'
                 Resource:
                   - '*'
+              - Effect: Allow
+                Action:
+                  - 'ec2:DescribeInstances'
+                Resource:
+                  # - '*'
+                  - !Sub arn:${AWS::Partition}:ec2:*:*:*
         - PolicyName: SecretsPolicy
           PolicyDocument:
             Version: 2012-10-17
@@ -687,7 +692,7 @@ Resources:
 
   AdministrationRole:
     Type: AWS::IAM::Role
-    Condition: UsingAWSDevOpsGuru
+    Condition: UsingAmazonDevOpsGuru
     Properties:
       RoleName: AWSCloudFormationStackSetAdministrationRole
       AssumeRolePolicyDocument:
@@ -711,7 +716,7 @@ Resources:
                   - "arn:*:iam::*:role/AWSCloudFormationStackSetExecutionRole"
   ExecutionRole:
     Type: AWS::IAM::Role
-    Condition: UsingAWSDevOpsGuru
+    Condition: UsingAmazonDevOpsGuru
     Properties:
       RoleName: AWSCloudFormationStackSetExecutionRole
       AssumeRolePolicyDocument:
@@ -728,7 +733,7 @@ Resources:
         - !Sub arn:${AWS::Partition}:iam::aws:policy/AdministratorAccess
   DevOpsGuruTopic:
     Type: AWS::SNS::Topic
-    Condition: UsingAWSDevOpsGuru
+    Condition: UsingAmazonDevOpsGuru
     Properties:
       DisplayName: SNS Topic for DevOps Guru
       TopicName: devops-guru
@@ -738,7 +743,7 @@ Resources:
           Protocol: email
   DevOpsGuruCMK:
     Type: AWS::KMS::Key
-    Condition: UsingAWSDevOpsGuru
+    Condition: UsingAmazonDevOpsGuru
     Properties:
       Enabled: True
       EnableKeyRotation: True
@@ -762,7 +767,7 @@ Resources:
           Resource: '*'
   DevOpsGuruMonitoring:
     Type: AWS::DevOpsGuru::ResourceCollection
-    Condition: UsingAWSDevOpsGuru
+    Condition: UsingAmazonDevOpsGuru
     Properties:
       ResourceCollectionFilter:
         CloudFormation:
@@ -770,7 +775,7 @@ Resources:
             - "*"
   DevOpsGuruNotification:
     Type: AWS::DevOpsGuru::NotificationChannel
-    Condition: UsingAWSDevOpsGuru
+    Condition: UsingAmazonDevOpsGuru
     Properties:
       Config:
         Sns:

@@ -59,7 +59,7 @@ Metadata:
       - Label:
           default: AWS DevOps Guru
         Parameters:
-          - EnableAWSDevOpsGuru
+          - EnableAmazonDevOpsGuru
           - AdministratorAccountId
           - EmailAddress
           - SnsTopicName
@@ -134,8 +134,8 @@ Metadata:
         default: Database master password
       DBPort:
         default: Database port
-      EnableAWSDevOpsGuru:
-        default: AWS DevOps Guru
+      EnableAmazonDevOpsGuru:
+        default: Amazon DevOps Guru
       AdministratorAccountId:
         Default: AWS Administrator account ID
       EmailAddress:
@@ -316,9 +316,9 @@ Parameters:
     NoEcho: 'True'
     Type: String
   BlockchainNodeUrl:
-    Default: 'wss://ethUrl'
+    Default: 'wss://blockchainNodeEndpoint'
     Description: 'Please provide websocket endpoint for a Blockchain node'
-    MaxLength: '64'
+    MaxLength: '240'
     MinLength: '6'
     Type: String
   NodeWalletPassword:
@@ -402,12 +402,12 @@ Parameters:
     ConstraintDescription: 'Must be in the range [1150-65535].'
     MinValue: 1150
     MaxValue: 65535
-  EnableAWSDevOpsGuru:
+  EnableAmazonDevOpsGuru:
     AllowedValues:
       - 'true'
       - 'false'
     Default: 'false'
-    Description: 'Enable AWS DevOps Guru'
+    Description: 'Enable Amazon DevOps Guru'
     Type: String
   AdministratorAccountId:
     Type: String
@@ -540,7 +540,7 @@ Resources:
         DBMasterUserPassword: !Ref DBMasterUserPassword
         DBPort: !Ref DBPort
         DBHostname: !GetAtt AuroraStack.Outputs.RDSEndPointAddress
-        EnableAWSDevOpsGuru: !Ref EnableAWSDevOpsGuru
+        EnableAmazonDevOpsGuru: !Ref EnableAmazonDevOpsGuru
         AdministratorAccountId: !Ref AdministratorAccountId
         EmailAddress: !Ref EmailAddress
         SnsTopicName: !Ref SnsTopicName
