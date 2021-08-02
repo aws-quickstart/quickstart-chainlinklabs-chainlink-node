@@ -38,6 +38,13 @@ Metadata:
           - DBPort
           - DBHostname
       - Label:
+          default: AWS DevOps Guru
+        Parameters:
+          - EnableAmazonDevOpsGuru
+          - AdministratorAccountId
+          - EmailAddress
+          - SnsTopicName
+      - Label:
           default: AWS Quick Start configuration
         Parameters:
           - QSS3BucketName
@@ -86,6 +93,14 @@ Metadata:
         default: Database port
       DBHostname:
         Default: Database hostname
+      EnableAmazonDevOpsGuru:
+        default: Amazon DevOps Guru
+      AdministratorAccountId:
+        Default: AWS Administrator account ID
+      EmailAddress:
+        Default: Email Address to receive SNS notification
+      SnsTopicName:
+        Default: SNS topic name
       QSS3BucketName:
         default: Quick Start S3 bucket name
       QSS3KeyPrefix:
@@ -204,6 +219,23 @@ Parameters:
   DBHostname:
     Description: 'The Amazon Aurora PostgreSQL database hostname.'
     Type: String
+  EnableAmazonDevOpsGuru:
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Description: 'Enable Amazon DevOps Guru'
+    Type: String
+  AdministratorAccountId:
+    Type: String
+    Description: AWS Account Id of the administrator account (the account in which StackSets will be created) - AWS DevOps Guru.
+    MaxLength: 12
+    MinLength: 12
+  EmailAddress:
+    Description: Email address for SNS subscription  - AWS DevOps Guru.
+    Type: String
+  SnsTopicName:
+    Type: String
+    Description: Name of SNS Topic  - AWS DevOps Guru.
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: The Quick Start bucket name can include numbers, lowercase
@@ -242,6 +274,9 @@ Conditions:
   UsingDefaultBucket: !Equals
     - !Ref QSS3BucketName
     - 'aws-quickstart'
+  UsingAmazonDevOpsGuru: !Equals
+    - !Ref EnableAmazonDevOpsGuru
+    - 'true'
 Resources:
   ChainlinkNodeAutoScalingGroup:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
@@ -280,6 +315,7 @@ Resources:
             - get-scripts
             - create-env
             - install-chainlink-docker
+            - init-cleanup
         common-init:
           commands:
             01-store-chainnetwork-var:
@@ -287,33 +323,42 @@ Resources:
                 echo 'chainNetwork=${BlockchainNetwork}' >> /etc/environment
             02-store-blockchainrpc-var:
               command: !Sub 
-                echo 'ethUrl=${BlockchainNodeUrl}' >> /etc/environment
+                echo 'blockchainNodeUrl=${BlockchainNodeUrl}' >> /etc/environment
             03-store-dbuser-var:
               command: !Sub 
                 echo 'psqlUser=${DBMasterUsername}' >> /etc/environment
-            04-store-dbpwd-var:
-              command: !Sub 
-                echo 'psqlPwd=${DBMasterUserPassword}' >> /etc/environment
-            05-store-dbhostname-var:
+            04-store-dbhostname-var:
               command: !Sub 
                 echo 'psqlHostname=${DBHostname}' >> /etc/environment
-            06-store-dbport-var:
+            05-store-dbport-var:
               command: !Sub 
                 echo 'psqlPort=${DBPort}' >> /etc/environment
-            07-store-dbname-var:
+            06-store-dbname-var:
               command: !Sub 
                 echo 'psqlDb=${DBName}' >> /etc/environment
-            08-store-apiuser-var:
+            07-store-apiuser-var:
               command: !Sub 
                 echo 'apiUser=${ChainlinkNodeGUIEmail}' >> /etc/environment
-            09-store-apipwd-var:
-              command: !Sub 
-                echo 'apiPwd=${ChainlinkNodeGUIPassword}' >> /etc/environment
-            10-store-walletpwd-var:
-              command: !Sub 
-                echo 'walletPwd=${NodeWalletPassword}' >> /etc/environment
-            11-create-chainlink-dir:
+            08-set-region:
+              command: !Sub
+                - echo 'AWS_DEFAULT_REGION=${MyAWSRegion}' >> /etc/environment
+                - MyAWSRegion: !Ref AWS::Region
+            09-set-dbsecret:
+              command: !Sub
+                - echo 'dbSecret=${DBSecret}' >> /etc/environment
+                - DBSecret: !Ref DBSecret
+            10-set-apisecret:
+              command: !Sub
+                - echo 'apiSecret=${ApiSecret}' >> /etc/environment
+                - ApiSecret: !Ref ApiSecret
+            11-set-walletsecret:
+              command: !Sub
+                - echo 'walletSecret=${WalletSecret}' >> /etc/environment
+                - WalletSecret: !Ref WalletSecret
+            12-create-chainlink-dir:
               command: mkdir /home/ec2-user/.chainlink
+            13-set-dir-permission:
+              command: chown ec2-user:ec2-user /home/ec2-user/.chainlink
         get-scripts:
           packages:
             yum:
@@ -325,8 +370,8 @@ Resources:
                 # - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
                 #   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000755'
-              owner: root
-              group: root
+              owner: ec2-user
+              group: ec2-user
               authentication: S3AccessCreds
             /home/ec2-user/.chainlink/create-api.sh:
               source: https://quickstart-chainlink-node-test-bucket.s3.us-east-1.amazonaws.com/quickstart-chainlink-node/scripts/create-api.sh
@@ -334,8 +379,8 @@ Resources:
                 # - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
                 #   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000755'
-              owner: root
-              group: root
+              owner: ec2-user
+              group: ec2-user
               authentication: S3AccessCreds
             /home/ec2-user/.chainlink/create-password.sh:
               source: https://quickstart-chainlink-node-test-bucket.s3.us-east-1.amazonaws.com/quickstart-chainlink-node/scripts/create-password.sh
@@ -343,8 +388,8 @@ Resources:
                 # - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
                 #   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000755'
-              owner: root
-              group: root
+              owner: ec2-user
+              group: ec2-user
               authentication: S3AccessCreds
         create-env:
           commands:
@@ -395,10 +440,12 @@ Resources:
               command: systemctl start docker
             02-docker-for-ec2-user:
               command: gpasswd -a ec2-user docker
-            03-run-chainlink-docker:
+            03-docker-chainlink-pull:
+              command: docker pull smartcontract/chainlink:0.9.10
+            04-run-chainlink-docker:
               command: |
                 latestimage=$(curl -s -S "https://registry.hub.docker.com/v2/repositories/smartcontract/chainlink/tags/" | jq -r '."results"[]["name"]' | head -n 1)
-                cd /home/ec2-user/.chainlink && docker run \
+                cd /home/ec2-user/.chainlink && docker run -d \
                 --log-driver=awslogs \
                 --log-opt awslogs-group=ChainlinkLogs \
                 --restart unless-stopped \
@@ -408,6 +455,15 @@ Resources:
                 --env-file=/home/ec2-user/.chainlink/.env  smartcontract/chainlink:$latestimage local n \
                 -p /chainlink/.password \
                 -a /chainlink/.api
+              ignoreErrors: true
+        init-cleanup:
+          commands:
+            01-remove-env:
+              command: rm -rf /home/ec2-user/.chainlink/.env
+            02-remove-api:
+              command: rm -rf /home/ec2-user/.chainlink/.api
+            03-remove-password:
+              command: rm -rf /home/ec2-user/.chainlink/.password
     Properties:
       AssociatePublicIpAddress: false
       KeyName: !Ref KeyPairName
@@ -488,7 +544,7 @@ Resources:
                Effect: Allow
                Action:
                  - 's3:GetObject'
-              #  Resource: !Sub arn:aws:s3:::${QSS3BucketName}/*
+              #  Resource: !Sub 'arn:aws:s3:::${BucketName}/${KeyPrefix}*'
                Resource: arn:aws:s3:::quickstart-chainlink-node-test-bucket/*
   ChainlinkNodeRole:
     Type: AWS::IAM::Role
@@ -510,13 +566,14 @@ Resources:
           PolicyDocument:
             Version: 2012-10-17
             Statement:
-              - Resource: '*'
-                Effect: Allow 
+              - Effect: Allow 
                 Action:
                   - 'logs:CreateLogStream'
                   - 'logs:CreateLogGroup'
                   - 'logs:PutLogEvents'
                   - 'logs:DescribeLogStreams'
+                Resource:
+                  - !Sub arn:${AWS::Partition}:logs:*:*:*
               - Effect: Allow
                 Action:
                   - 'cloudwatch:PutMetricData'
@@ -527,14 +584,20 @@ Resources:
               - Effect: Allow
                 Action:
                   - 'ec2:DescribeInstances'
-                Resource: '*'
-              - Resource:
+                Resource:
+                  # - '*'
+                  - !Sub arn:${AWS::Partition}:ec2:*:*:*
+        - PolicyName: SecretsPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource:
                   - !Ref DBSecret
                   - !Ref ApiSecret
                   - !Ref WalletSecret
-                Effect: "Allow"
-                Action:
-                  - secretsmanager:GetSecretValue
   ELBSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -608,22 +671,112 @@ Resources:
     Properties:
       LogGroupName: ChainlinkNodeInitLogGroup
       RetentionInDays: 7
-
   DBSecret:
     Type: 'AWS::SecretsManager::Secret'
     Properties:
       Name: DBSecret
       Description: Secret password for PostgreSQL database.
-      SecretString: !Sub '{"psqlPwd":"${DBMasterUserPassword}"'
+      SecretString: !Sub ${DBMasterUserPassword}
   ApiSecret:
     Type: 'AWS::SecretsManager::Secret'
     Properties:
       Name: ApiSecret
       Description: Secret password for Chainlink node GUI
-      SecretString: !Sub '{"apiPwd":"${ChainlinkNodeGUIPassword}"'
+      SecretString: !Sub ${ChainlinkNodeGUIPassword}
   WalletSecret:
     Type: 'AWS::SecretsManager::Secret'
     Properties:
       Name: WalletSecret
       Description: Secret password for Chainlink node wallet password
-      SecretString: !Sub '{"walletPwd":"${NodeWalletPassword}"'
+      SecretString: !Sub ${NodeWalletPassword}
+
+  AdministrationRole:
+    Type: AWS::IAM::Role
+    Condition: UsingAmazonDevOpsGuru
+    Properties:
+      RoleName: AWSCloudFormationStackSetAdministrationRole
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudformation.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: AssumeRole-AWSCloudFormationStackSetExecutionRole
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sts:AssumeRole
+                Resource:
+                  - "arn:*:iam::*:role/AWSCloudFormationStackSetExecutionRole"
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Condition: UsingAmazonDevOpsGuru
+    Properties:
+      RoleName: AWSCloudFormationStackSetExecutionRole
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - !Ref AdministratorAccountId
+            Action:
+              - sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/AdministratorAccess
+  DevOpsGuruTopic:
+    Type: AWS::SNS::Topic
+    Condition: UsingAmazonDevOpsGuru
+    Properties:
+      DisplayName: SNS Topic for DevOps Guru
+      TopicName: devops-guru
+      KmsMasterKeyId: !Ref DevOpsGuruCMK
+      Subscription:
+        - Endpoint: !Ref EmailAddress
+          Protocol: email
+  DevOpsGuruCMK:
+    Type: AWS::KMS::Key
+    Condition: UsingAmazonDevOpsGuru
+    Properties:
+      Enabled: True
+      EnableKeyRotation: True
+      KeyPolicy:
+        Id: DevOpsGuruCMK
+        Version: 2012-10-17
+        Statement:
+        - Sid: Allow DevOps Guru Service Principal
+          Effect: Allow
+          Principal:
+            Service: devops-guru.amazonaws.com
+          Action:
+            - kms:GenerateDataKey*
+            - kms:Decrypt
+          Resource: '*'
+        - Sid: Allow Administration
+          Effect: Allow
+          Principal:
+            AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+          Action: kms:*
+          Resource: '*'
+  DevOpsGuruMonitoring:
+    Type: AWS::DevOpsGuru::ResourceCollection
+    Condition: UsingAmazonDevOpsGuru
+    Properties:
+      ResourceCollectionFilter:
+        CloudFormation:
+          StackNames:
+            - "*"
+  DevOpsGuruNotification:
+    Type: AWS::DevOpsGuru::NotificationChannel
+    Condition: UsingAmazonDevOpsGuru
+    Properties:
+      Config:
+        Sns:
+          TopicArn: !Sub arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${SnsTopicName}
