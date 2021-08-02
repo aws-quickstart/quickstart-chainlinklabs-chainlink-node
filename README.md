@@ -40,7 +40,7 @@ CIDR blocks, instance types, database instance types, and environment variables,
 2. Create a public certificate using Amazon Certificate Manager in your preferred region.
 3. If using an existing VPC, make sure that it contains two public subnets, two private subnets, internet gateway, NAT gateways, and route tables.
 
-## Manually creating env, api, and password files
+## Manually creating env and password files
 
 1. Run create-env.sh to create the environment variable file for your Chainlink node
 
@@ -57,7 +57,7 @@ CIDR blocks, instance types, database instance types, and environment variables,
 ```
 cd $HOME/.chainlink/ && ./create-env.sh \
 ${chainNetwork} \
-${ethUrl} \
+${blockchainNodeUrl} \
 ${psqlUser} \
 $(aws secretsmanager get-secret-value --secret-id DBSecret --query "SecretString" --output text) \
 ${psqlHostname} \

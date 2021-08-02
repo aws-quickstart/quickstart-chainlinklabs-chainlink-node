@@ -323,7 +323,7 @@ Resources:
                 echo 'chainNetwork=${BlockchainNetwork}' >> /etc/environment
             02-store-blockchainrpc-var:
               command: !Sub 
-                echo 'ethUrl=${BlockchainNodeUrl}' >> /etc/environment
+                echo 'blockchainNodeUrl=${BlockchainNodeUrl}' >> /etc/environment
             03-store-dbuser-var:
               command: !Sub 
                 echo 'psqlUser=${DBMasterUsername}' >> /etc/environment
