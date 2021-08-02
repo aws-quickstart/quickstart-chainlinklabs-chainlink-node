@@ -842,11 +842,22 @@ p.footer-text a{color:#d7d8d8}
 <li><a href="#_launch_the_quick_start">Launch the Quick Start</a></li>
 </ul>
 </li>
-<li><a href="#_test_the_deployment">Test the deployment</a></li>
-<li><a href="#_post_deployment_steps">Post-deployment steps</a></li>
-<li><a href="#_best_practices_for_using_chainlink_node_on_aws">Best practices for using Chainlink Node on AWS</a></li>
+<li><a href="#_post_deployment_steps">Post-deployment steps</a>
+<ul class="sectlevel2">
+<li><a href="#_access_your_chainlink_node">Access your Chainlink node</a></li>
+<li><a href="#_manually_creating_your_env_and_password_files_for_chainlink_node_docker_instance">Manually creating your .env and .password files for Chainlink node Docker instance</a></li>
+<li><a href="#_docker_run_command_to_start_chainlink_node_instances">Docker run command to start Chainlink node instances</a></li>
+</ul>
+</li>
+<li><a href="#_best_practices_for_using_chainlink_node_on_aws">Best practices for using Chainlink Node on AWS</a>
+<ul class="sectlevel2">
+<li><a href="#_restricting_access">Restricting Access</a></li>
+<li><a href="#_failover_capabilities">Failover Capabilities</a></li>
+<li><a href="#_disaster_recovery">Disaster Recovery</a></li>
+<li><a href="#_active_monitoring">Active Monitoring</a></li>
+</ul>
+</li>
 <li><a href="#_security">Security</a></li>
-<li><a href="#_other_useful_information">Other useful information</a></li>
 <li><a href="#_faq">FAQ</a></li>
 <li><a href="#_troubleshooting">Troubleshooting</a></li>
 <li><a href="#_customer_responsibility">Customer responsibility</a></li>
@@ -919,7 +930,7 @@ report bugs, or submit feature ideas for this Quick Start.
 <p>This guide provides instructions for deploying the Chainlink Node Quick Start reference architecture on the AWS Cloud.</p>
 </div>
 <div class="paragraph">
-<p>This Quick Start is for users who enterprise users that want to run a highly available and secure Chainlink node.</p>
+<p>This Quick Start is for users who enterprise users that want to run a highly available and secure Chainlink Node.</p>
 </div></div></td>
 </tr>
 </tbody>
@@ -957,7 +968,7 @@ Amazon may share user-deployment information with the AWS Partner that collabora
 <p>When deployed to a blockchain, a smart contract is a set of instructions that can be executed without intervention from third parties. The code of a smart contract determines how it responds to input, just like the code of any other computer program.</p>
 </div>
 <div class="paragraph">
-<p>The Chainlink node is middleware, operating between the blockchain and external data.</p>
+<p>The Chainlink node is middleware, operating between the blockchain and external data. Node operators are able to run their Chainlink nodes with oracle job specifications, or specs, which contain the sequential tasks that the node must perform to produce a final result. The Chainlink node provide external data directly to smart contracts.</p>
 </div></div></td>
 </tr>
 </tbody>
@@ -1092,6 +1103,9 @@ Shell (SSH) access to EC2 instances in public and private subnets.</p>
 <li>
 <p>AWS Secrets Manager to store your credentials.</p>
 </li>
+<li>
+<p>Amazon DevOps Guru tracking of your Chainlink Node stack.</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -1123,7 +1137,35 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>This Quick Start also assumes familiarity with basic concepts in the areas of networking and DevOps. This deployment guide also requires a moderate level of familiarity with AWS services. If you’re new to AWS, visit the Getting Started Resource Center and the AWS Training and Certification website for materials and programs that can help you develop the skills to design, deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
+<p>This Quick Start also assumes familiarity with basic concepts in the areas of networking and DevOps. This deployment guide also requires a moderate level of familiarity with AWS services.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://aws.amazon.com/ec2/">Amazon EC2</a></p>
+</li>
+<li>
+<p><a href="https://aws.amazon.com/vpc/">Amazon VPC</a></p>
+</li>
+<li>
+<p><a href="https://aws.amazon.com/cloudwatch/">Amazon CloudWatch</a></p>
+</li>
+<li>
+<p><a href="https://aws.amazon.com/devops-guru/">Amazon DevOps Guru</a></p>
+</li>
+<li>
+<p><a href="https://aws.amazon.com/rds/aurora/?aurora-whats-new.sort-by=item.additionalFields.postDateTime&amp;aurora-whats-new.sort-order=desc">Amazon Aurora PostgreSQL</a></p>
+</li>
+<li>
+<p><a href="https://aws.amazon.com/cloudformation/">AWS CloudFormation</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you’re new to AWS, visit the <a href="https://aws.amazon.com/getting-started/">Getting Started Resource Center</a> and the <a href="https://aws.amazon.com/training/">AWS Training and Certification</a> for materials and programs that can help you develop the skills to design, deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
+</div>
+<div class="paragraph">
+<p>We recommend that you also become familiar with running <a href="https://docs.chain.link/docs/running-a-chainlink-node/">Chainlink nodes</a>.</p>
 </div></div></td>
 </tr>
 </tbody>
@@ -1174,7 +1216,7 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Security groups</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;n&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AWS Identity and Access Management (IAM) roles</p></td>
@@ -1186,11 +1228,7 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Application Load Balancers</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;n&gt;</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Network Load Balancers</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;n&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">t2.micro instances</p></td>
@@ -1202,7 +1240,7 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">db.t3.medium instances</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 </tr>
 </tbody>
 </table>
@@ -1276,6 +1314,9 @@ following the on-screen instructions.</p>
 <p>Create a public certificate using Amazon Certificate Manager in your preferred region.</p>
 </li>
 <li>
+<p>Run a blockchain client or use a third party client. In the case of a third party Ethereum client, you can use the websocket endpoint from <a href="https://infura.io/docs/ethereum/wss/introduction.md">Infura</a> or <a href="https://docs.fiews.io/docs/getting-started">Fiews</a>. For other Ethereum clients, visit <a href="https://docs.chain.link/docs/run-an-ethereum-client/">Run an Ethereum Client</a>.</p>
+</li>
+<li>
 <p>If using an existing VPC, make sure that it contains two public subnets, two private subnets, internet gateway, NAT gateways, and route tables.</p>
 </li>
 </ol>
@@ -1336,7 +1377,22 @@ following the on-screen instructions.</p>
 <li>
 <p>Make sure that your AWS account is configured correctly, as discussed in the <a href="#_technical_requirements">Technical requirements</a> section.</p>
 </li>
+<li>
+<p>Use the region selector in the navigation bar to choose the AWS Region where you want to deploy your Chainlink Node.</p>
+</li>
 </ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The Chainlink Node AWS QuickStart will deploy Aurora PostgreSQL databases. Aurora PostgreSQL compatibility isn’t currently supported in all AWS Regions. For a current list of supported regions, see the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#aurora">AWS Regions and Endpoints webpage</a>.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -1348,7 +1404,7 @@ following the on-screen instructions.</p>
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-If you’re deploying Chainlink Node into an existing VPC, make sure that your VPC has two private subnets in different Availability Zones for the workload instances and that the subnets aren’t shared. This Quick Start doesn’t support <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html" target="_blank" rel="noopener">shared subnets</a>. These subnets require <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html" target="_blank" rel="noopener">NAT gateways</a> in their route tables to allow the instances to download packages and software without exposing them to the internet. Also make sure that the domain name option in the DHCP options is configured as explained in <a href="http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_DHCP_Options.html" target="_blank" rel="noopener">DHCP options sets</a>. You provide your VPC settings when you launch the Quick Start.
+If you’re deploying Chainlink Node into an existing VPC, make sure that your VPC has two private subnets in different Availability Zones. These subnets require NAT gateways in their route tables to allow instances to communicate with other Chainlink nodes without exposing them to the internet.
 </td>
 </tr>
 </table>
@@ -1408,22 +1464,175 @@ If you’re deploying Chainlink Node into an existing VPC, make sure that your V
 </div>
 </div>
 <div class="sect1">
-<h2 id="_test_the_deployment">Test the deployment</h2>
-<div class="sectionbody">
-
-</div>
-</div>
-<div class="sect1">
 <h2 id="_post_deployment_steps">Post-deployment steps</h2>
 <div class="sectionbody">
-
+<div class="sect2">
+<h3 id="_access_your_chainlink_node">Access your Chainlink node</h3>
+<div class="paragraph">
+<p>You can access your Chainlink node through the web graphical user interface. There are two options on accessing the page.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Access the Chainlink node web GUI through the application load balancer endpoint or through a domain by adding the load balancer endpoint to your domain&#8217;s DNS record.</p>
+</li>
+<li>
+<p>By enabling TCP port forwarding on your bastion host, you are able to port forward the Chainlink node web GUI to your machine. As we are accessing the Chainlink node through a bastion, it is recommended to use SSH agent forwarding. Then connect to your bastion with SSH agent and TCP port forwarding. You can access the Chainlink node web GUI at <a href="http://localhost:6688/" class="bare">http://localhost:6688/</a>.</p>
+</li>
+</ol>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ssh-add &lt;your_ssh_key&gt;
+ssh ec2-user@&lt;bastion_host_public_ip&gt; -A -L 6688:localhost:6688
+ssh ec2-user@&lt;chainlink_node_internal_ip&gt; -L 6688:localhost:6688</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_manually_creating_your_env_and_password_files_for_chainlink_node_docker_instance">Manually creating your .env and .password files for Chainlink node Docker instance</h3>
+<div class="paragraph">
+<p>If the Chainlink node docker instances are stopped, then you will need to manually generate the .env and .password files to be able to start the Chainlink nodes.</p>
+</div>
+<div class="paragraph">
+<p>Blockchain Network (chainNetwork):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ETH-Mainnet</p>
+</li>
+<li>
+<p>Kovan-ETH-Testnet</p>
+</li>
+<li>
+<p>Rinkeby-ETH-Testnet</p>
+</li>
+<li>
+<p>xDai-Mainnet</p>
+</li>
+<li>
+<p>Heco-Mainnet</p>
+</li>
+<li>
+<p>BSC-Mainnet</p>
+</li>
+<li>
+<p>Matic-Mainnet</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Generating the .env file:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>cd /home/ec2-user/.chainlink/ &amp;&amp; ./create-env.sh \
+${chainNetwork} \
+${blockchainNodeUrl} \
+${psqlUser} \
+$(aws secretsmanager get-secret-value --secret-id DBSecret --query "SecretString" --output text) \
+${psqlHostname} \
+${psqlPort} \
+${psqlDb}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Generating the .password file:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>cd /home/ec2-user/.chainlink/ &amp;&amp; ./create-password.sh \
+$(aws secretsmanager get-secret-value --secret-id WalletSecret --query "SecretString" --output text)</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_docker_run_command_to_start_chainlink_node_instances">Docker run command to start Chainlink node instances</h3>
+<div class="paragraph">
+<p>To manually run the latest image of Chainlink node Docker instance:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>latestimage=$(curl -s -S "https://registry.hub.docker.com/v2/repositories/smartcontract/chainlink/tags/" | jq -r '."results"[]["name"]' | head -n 1)
+cd /home/ec2-user/.chainlink &amp;&amp; docker run -d \
+--log-driver=awslogs \
+--log-opt awslogs-group=ChainlinkLogs \
+--restart unless-stopped \
+--name chainlink \
+-p 6688:6688 \
+-v /home/ec2-user/.chainlink:/chainlink \
+--env-file=/home/ec2-user/.chainlink/.env  smartcontract/chainlink:$latestimage local n \
+-p /chainlink/.password</pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_best_practices_for_using_chainlink_node_on_aws">Best practices for using Chainlink Node on AWS</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_restricting_access">Restricting Access</h3>
 <div class="paragraph">
-<p><em>Add any best practices for using the software.</em></p>
+<p>To run a Chainlink node, the Operator UI port does not need to be open on the internet for it to correctly function. Due to this, we recommend restricting access to all of the services required over the internet.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_failover_capabilities">Failover Capabilities</h3>
+<div class="paragraph">
+<p>To ensure there is very minimal downtime, failover capabilities are required on both the Chainlink and Ethereum clients so that if any one server fails, the service is still online. The Auto Scaling Group has two Chainlink nodes: one active Chainlink node and one standby Chainlink node.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_disaster_recovery">Disaster Recovery</h3>
+<div class="paragraph">
+<p>Problems occur and when they do, the right processes need to be in-place to ensure that as little downtime as possible occurs. The main impediment to incurring large amounts of downtime in the context of Chainlink node operators is a fully corrupted Ethereum node that requires a re-sync.</p>
+</div>
+<div class="paragraph">
+<p>Due to the challenge of recovering an Ethereum client, we recommend:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Daily snapshots of the Ethereum chain on a separate server than what the Chainlink node is connected to.</p>
+</li>
+<li>
+<p>An Ethereum client start-up process that pulls down the latest template of the chain and syncs it to the latest height.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>With this process in-place, the elapsed time of full disaster is kept to a minimum.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_active_monitoring">Active Monitoring</h3>
+<div class="paragraph">
+<p>To be proactive in detecting any issues before or when they occur, active monitoring needs to be in place. The areas where we recommend to monitor are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>(Minimum Required) ETH balance of the wallet address assigned to the node.</p>
+</li>
+<li>
+<p>Errored job runs.</p>
+</li>
+<li>
+<p>Operator UI port to be open and responsive. (Usually: 6688)</p>
+</li>
+<li>
+<p>Ethereum http and websocket ports to be open and responsive. (Usually: 8545 &amp; 8546)</p>
+</li>
+<li>
+<p>Ethereum client disk, RAM and CPU usage.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Monitoring of the Chainlink nodes are in Amazon CloudWatch.</p>
+</div>
 </div>
 </div>
 </div>
@@ -1431,15 +1640,7 @@ If you’re deploying Chainlink Node into an existing VPC, make sure that your V
 <h2 id="_security">Security</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>Add any security-related information.</em></p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_other_useful_information">Other useful information</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p><em>Add any other details that will help the customer use the software on AWS.</em></p>
+<p>The Chainlink node Docker instance requires both an .env and .password file that contain plaintext passwords. It is recommended to remove these files once the Chainlink node instance is running.</p>
 </div>
 <div class="paragraph">
 <p><em><strong>This portion of the deployment guide is located at <code>docs/partner_editable/faq_troubleshooting.adoc</code></strong></em></p>

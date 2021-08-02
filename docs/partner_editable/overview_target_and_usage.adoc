@@ -4,4 +4,4 @@
 
 This guide provides instructions for deploying the {partner-product-short-name} Quick Start reference architecture on the AWS Cloud.
 
-This Quick Start is for users who enterprise users that want to run a highly available and secure Chainlink node. 
+This Quick Start is for users who enterprise users that want to run a highly available and secure {partner-product-short-name}. 

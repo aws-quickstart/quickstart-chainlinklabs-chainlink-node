@@ -6,4 +6,4 @@ Chainlink is a data oracle that enables smart contracts on any blockchain to lev
 
 When deployed to a blockchain, a smart contract is a set of instructions that can be executed without intervention from third parties. The code of a smart contract determines how it responds to input, just like the code of any other computer program.
 
-The Chainlink node is middleware, operating between the blockchain and external data.
+The Chainlink node is middleware, operating between the blockchain and external data. Node operators are able to run their Chainlink nodes with oracle job specifications, or specs, which contain the sequential tasks that the node must perform to produce a final result. The Chainlink node provide external data directly to smart contracts.

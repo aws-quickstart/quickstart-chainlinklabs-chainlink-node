@@ -30,5 +30,6 @@ Shell (SSH) access to EC2 instances in public and private subnets.
 * Amazon CloudWatch logging of Chainlink nodes.
 * AWS managed keys and customer managed keys for resources with AWS Key Management Service (KMS).
 * AWS Secrets Manager to store your credentials.
+* Amazon DevOps Guru tracking of your {partner-product-short-name} stack.
 
 [.small]#* The template that deploys the Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.#

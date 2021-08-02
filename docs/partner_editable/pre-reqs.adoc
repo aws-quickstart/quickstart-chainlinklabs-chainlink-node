@@ -6,7 +6,8 @@
 following the on-screen instructions.
 2. Create a key pair in your preferred region.
 3. Create a public certificate using Amazon Certificate Manager in your preferred region.
-4. If using an existing VPC, make sure that it contains two public subnets, two private subnets, internet gateway, NAT gateways, and route tables.
+4. Run a blockchain client or use a third party client. In the case of a third party Ethereum client, you can use the websocket endpoint from https://infura.io/docs/ethereum/wss/introduction.md[Infura] or https://docs.fiews.io/docs/getting-started[Fiews]. For other Ethereum clients, visit https://docs.chain.link/docs/run-an-ethereum-client/[Run an Ethereum Client].
+5. If using an existing VPC, make sure that it contains two public subnets, two private subnets, internet gateway, NAT gateways, and route tables.
 
 //==== Prepare your {partner-company-name} account
 
