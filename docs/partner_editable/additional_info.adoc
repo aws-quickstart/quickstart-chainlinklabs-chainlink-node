@@ -19,18 +19,8 @@ ssh ec2-user@<bastion_host_public_ip> -A -L 6688:localhost:6688
 ssh ec2-user@<chainlink_node_internal_ip> -L 6688:localhost:6688
 ....
 
-=== Manually creating your .env and .password files for Chainlink node Docker instance
+=== Manually creating your .env and .password files for Chainlink node docker instance
 If the Chainlink node docker instances are stopped, then you will need to manually generate the .env and .password files to be able to start the Chainlink nodes.
-
-Blockchain Network (chainNetwork):
-
-- ETH-Mainnet
-- Kovan-ETH-Testnet
-- Rinkeby-ETH-Testnet
-- xDai-Mainnet
-- Heco-Mainnet
-- BSC-Mainnet
-- Matic-Mainnet
 
 Generating the .env file:
 ....
@@ -51,7 +41,7 @@ $(aws secretsmanager get-secret-value --secret-id WalletSecret --query "SecretSt
 ....
 
 === Docker run command to start Chainlink node instances
-To manually run the latest image of Chainlink node Docker instance:
+To manually run the latest image of Chainlink node docker instance:
 
 ....
 latestimage=$(curl -s -S "https://registry.hub.docker.com/v2/repositories/smartcontract/chainlink/tags/" | jq -r '."results"[]["name"]' | head -n 1)
@@ -69,11 +59,8 @@ cd /home/ec2-user/.chainlink && docker run -d \
 == Best practices for using {partner-product-short-name} on AWS
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-=== Restricting Access
-To run a Chainlink node, the Operator UI port does not need to be open on the internet for it to correctly function. Due to this, we recommend restricting access to all of the services required over the internet.
-
 === Failover Capabilities
-To ensure there is very minimal downtime, failover capabilities are required on both the Chainlink and Ethereum clients so that if any one server fails, the service is still online. The Auto Scaling Group has two Chainlink nodes: one active Chainlink node and one standby Chainlink node.
+To ensure there is very minimal downtime, failover capabilities are required on both the Chainlink and Ethereum clients so that if any one server fails, the service is still online. The Amazon EC2 Auto Scaling group has two Chainlink nodes: one active Chainlink node and one standby Chainlink node. Data from both the Chainlink and Ethereum clients are stored in a PostgreSQL database which needs to be highly available.
 
 === Disaster Recovery
 Problems occur and when they do, the right processes need to be in-place to ensure that as little downtime as possible occurs. The main impediment to incurring large amounts of downtime in the context of Chainlink node operators is a fully corrupted Ethereum node that requires a re-sync.
@@ -100,7 +87,7 @@ Monitoring of the Chainlink nodes are available through Amazon CloudWatch.
 == Security
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-The Chainlink node Docker instance requires both an .env and .password file that contain plaintext passwords. It is recommended to remove these files once the Chainlink node instance is running.
+The Chainlink node docker instance requires both an .env and .password file that contain plaintext passwords. It is recommended to remove the .env and .password files once the Chainlink node instance is running to prevent potential exposure of sensitive passwords.
 
 //== Other useful information
 //Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
