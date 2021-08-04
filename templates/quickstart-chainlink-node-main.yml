@@ -353,7 +353,7 @@ Parameters:
   SSLCertificateARN:
     Description: 'ARN for the certificate created through AWS Certificate Manager'
     AllowedPattern: '.+'
-    Default: 'arn:aws:acm:region:certificate'
+    Default: 'arn:aws:acm:region:account-id:certificate'
     Type: String
   DBName: 
     AllowedPattern: '[a-zA-Z0-9]*'
@@ -437,15 +437,15 @@ Parameters:
     Description: AWS Account Id of the administrator account (the account in which StackSets will be created) - AWS DevOps Guru.
     MaxLength: 12
     MinLength: 12
-    Default: '123456789000'
+    Default: '000000000000'
   EmailAddress:
     Description: Email address for SNS subscription  - AWS DevOps Guru.
     Type: String
-    Default: user@email.com
+    Default: chainlinkuser@email.com
   SnsTopicName:
     Type: String
     Description: Name of SNS Topic  - AWS DevOps Guru.
-    Default: 'AWS DevOps Guru - Chainlink Node QuickStart'
+    Default: 'chainlinknodeqs'
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: The Quick Start bucket name can include numbers, lowercase

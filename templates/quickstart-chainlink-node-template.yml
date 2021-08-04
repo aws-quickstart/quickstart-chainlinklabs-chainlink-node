@@ -733,7 +733,7 @@ Resources:
     Condition: UsingAmazonDevOpsGuru
     Properties:
       DisplayName: SNS Topic for DevOps Guru
-      TopicName: devops-guru
+      TopicName: !Ref SnsTopicName
       KmsMasterKeyId: !Ref DevOpsGuruCMK
       Subscription:
         - Endpoint: !Ref EmailAddress
