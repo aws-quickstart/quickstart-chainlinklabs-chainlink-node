@@ -61,7 +61,6 @@ Metadata:
           - EnableAmazonDevOpsGuru
           - AdministratorAccountId
           - EmailAddress
-          - SnsTopicName
       - Label:
           default: AWS Quick Start configuration
         Parameters:
@@ -139,8 +138,6 @@ Metadata:
         Default: AWS Administrator account ID
       EmailAddress:
         Default: Email Address to receive SNS notification
-      SnsTopicName:
-        Default: SNS topic name
       QSS3BucketName:
         default: Quick Start S3 bucket name
       QSS3KeyPrefix:
@@ -329,7 +326,7 @@ Parameters:
   SSLCertificateARN:
     Description: 'ARN for the certificate created through AWS Certificate Manager'
     AllowedPattern: '.+'
-    Default: 'arn:aws:acm:region:certificate'
+    Default: 'arn:aws:acm:region:account-id:certificate'
     Type: String
   DBName: 
     AllowedPattern: '[a-zA-Z0-9]*'
@@ -413,12 +410,11 @@ Parameters:
     Description: AWS Account Id of the administrator account (the account in which StackSets will be created) - AWS DevOps Guru.
     MaxLength: 12
     MinLength: 12
+    Default: '000000000000'
   EmailAddress:
     Description: Email address for SNS subscription  - AWS DevOps Guru.
     Type: String
-  SnsTopicName:
-    Type: String
-    Description: Name of SNS Topic  - AWS DevOps Guru.
+    Default: user@email.com
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: The Quick Start bucket name can include numbers, lowercase
@@ -536,7 +532,6 @@ Resources:
         EnableAmazonDevOpsGuru: !Ref EnableAmazonDevOpsGuru
         AdministratorAccountId: !Ref AdministratorAccountId
         EmailAddress: !Ref EmailAddress
-        SnsTopicName: !Ref SnsTopicName
         QSS3BucketRegion: !Ref QSS3BucketRegion
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
