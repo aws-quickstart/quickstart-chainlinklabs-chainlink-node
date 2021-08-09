@@ -2,7 +2,7 @@ project:
   name: quickstart-chainlinklabs-chainlink-node
   regions:
   # only able to test in region with SSL certificates set up through AWS Certificate Manager with the SSL Certificate ARN
-  - us-west-2
+  - ap-southeast-1
   #- us-east-1
 tests:
   default:
