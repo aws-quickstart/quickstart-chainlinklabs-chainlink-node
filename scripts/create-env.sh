@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# 1. chainNetwork
-# 2. ethUrl
-# 3. psqlUser
-# 4. psqlPwd
-# 5. psqlHostname
-# 6. psqlPort
-# 7. psqlDb
-
 case $1 in
   ETH-Mainnet )
     chain=1
@@ -45,27 +37,32 @@ LOG_LEVEL=debug
 ETH_CHAIN_ID=${chain}
 LINK_CONTRACT_ADDRESS=${contractAddress}
 ALLOW_ORIGINS=*
-MINIMUM_CONTRACT_PAYMENT=1000000000000
+MINIMUM_CONTRACT_PAYMENT_LINK_JUELS=1000000000000
 DEFAULT_HTTP_ALLOW_UNRESTRICTED_NETWORK_ACCESS=true
 JSON_CONSOLE=true
+
 # Ethereum Mainnet Variables
 MIN_OUTGOING_CONFIRMATIONS=2
 MIN_INCOMING_CONFIRMATIONS=2
 ETH_URL=$2
+
 # Database Values
 DATABASE_URL=postgresql://$3:$4@$5:$6/$7
 DATABASE_TIMEOUT=0
+
 # Settings for HTTPS (enable these or the ones below for http)
 #CHAINLINK_TLS_PORT=6689
 #SECURE_COOKIES=true
 #TLS_CERT_PATH=/chainlink/tls/server.crt
 #TLS_KEY_PATH=/chainlink/tls/server.key
+
 # Setting for HTTP
 CHAINLINK_TLS_PORT=0
 SECURE_COOKIES=false
+
 # Transaction Improvements
-GAS_UPDATER_ENABLED=true
-GAS_UPDATER_TRANSACTION_PERCENTILE=60
+GAS_ESTIMATOR_MODE=BlockHistory
+BLOCK_HISTORY_ESTIMATOR_BLOCK_HISTORY_SIZE=8
 ETH_GAS_BUMP_THRESHOLD=9
 ETH_GAS_BUMP_WEI=7000000000
 ETH_BALANCE_MONITOR_BLOCK_DELAY=3

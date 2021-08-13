@@ -43,6 +43,7 @@ Metadata:
           - ChainlinkNodeGUIPassword
           - BlockchainNodeUrl
           - NodeWalletPassword
+          - UseSSLCertificate
           - SSLCertificateARN
       - Label:
           default: Aurora PostreSQL configuration
@@ -57,7 +58,7 @@ Metadata:
           - DBMasterUserPassword
           - DBPort
       - Label:
-          default: AWS DevOps Guru
+          default: Amazon DevOps Guru
         Parameters:
           - EnableAmazonDevOpsGuru
           - AdministratorAccountId
@@ -117,6 +118,8 @@ Metadata:
         default: Blockchain node Websocket Url
       NodeWalletPassword:
         default: Chainlink node Wallet Password
+      UseSSLCertificate:
+        default: SSL certificate with AWS Certificate Manager
       SSLCertificateARN:
         default: SSL certificate ARN
       DBName:
@@ -347,8 +350,15 @@ Parameters:
     MinLength: '9'
     NoEcho: 'True'
     Type: String
+  UseSSLCertificate:
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Default: 'true'
+    Description: 'Use a public certificate created through AWS Certificate Manager (ACM).'
+    Type: String
   SSLCertificateARN:
-    Description: 'ARN for the certificate created through AWS Certificate Manager'
+    Description: 'ARN of the SSL Certificate created through AWS Certificate Manager.'
     AllowedPattern: '.+'
     Default: 'arn:aws:acm:region:account-id:certificate'
     Type: String
@@ -431,14 +441,14 @@ Parameters:
     Type: String
   AdministratorAccountId:
     Type: String
-    Description: AWS Account Id of the administrator account (the account in which StackSets will be created) - AWS DevOps Guru.
+    Description: 'AWS Account Id of the administrator account (the account in which StackSets will be created).'
     MaxLength: 12
     MinLength: 12
     Default: '000000000000'
   EmailAddress:
-    Description: Email address for SNS subscription  - AWS DevOps Guru.
+    Description: 'Email address for Amazon DevOps Guru SNS subscription.'
     Type: String
-    Default: user@email.com
+    Default: chainlinkuser@email.com
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: The Quick Start bucket name can include numbers, lowercase
@@ -557,6 +567,7 @@ Resources:
         BastionBanner: !Ref BastionBanner
         EnableTCPForwarding: !Ref EnableTCPForwarding
         EnableX11Forwarding: !Ref EnableX11Forwarding
+        UseSSLCertificate: !Ref UseSSLCertificate
         SSLCertificateARN: !Ref SSLCertificateARN
         EnableAmazonDevOpsGuru: !Ref EnableAmazonDevOpsGuru
         AdministratorAccountId: !Ref AdministratorAccountId

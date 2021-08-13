@@ -27,6 +27,7 @@ Metadata:
           - ChainlinkNodeGUIPassword
           - BlockchainNodeUrl
           - NodeWalletPassword
+          - UseSSLCertificate
           - SSLCertificateARN
       - Label:
           default: Aurora PostreSQL configuration
@@ -79,8 +80,10 @@ Metadata:
         default: Ethereum Node Websocket Url
       NodeWalletPassword:
         default: Chainlink Node Wallet Password
+      UseSSLCertificate:
+        default: SSL certificate with AWS Certificate Manager
       SSLCertificateARN:
-        default: ARN for the certificate created through AWS Certificate Manager
+        default: ARN of the certificate created through AWS Certificate Manager
       DBName:
         default: Database name
       DBMasterUsername:
@@ -196,8 +199,14 @@ Parameters:
     Description: 'Node Wallet password must container 3 capital letters, 3 lowercase letters, 3 numbers, and 3 special characters.'
     NoEcho: 'True'
     Type: String
+  UseSSLCertificate:
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Description: 'Using public certificate created through AWS Certificate Manager (ACM).'
+    Type: String
   SSLCertificateARN:
-    Description: 'ARN for the SSL Certificate'
+    Description: 'ARN of the SSL Certificate created through AWS Certificate Manager.'
     Type: String
   DBName: 
     Description: 'Name of the Amazon Aurora database.'
@@ -223,11 +232,11 @@ Parameters:
     Type: String
   AdministratorAccountId:
     Type: String
-    Description: AWS Account Id of the administrator account (the account in which StackSets will be created) - AWS DevOps Guru.
+    Description: 'AWS Account Id of the administrator account (the account in which StackSets will be created).'
     MaxLength: 12
     MinLength: 12
   EmailAddress:
-    Description: Email address for SNS subscription  - AWS DevOps Guru.
+    Description: 'Email address for Amazon DevOps Guru SNS subscription.'
     Type: String
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
@@ -267,6 +276,9 @@ Conditions:
   UsingDefaultBucket: !Equals
     - !Ref QSS3BucketName
     - 'aws-quickstart'
+  UsingSSLCertificate: !Equals
+    - !Ref UseSSLCertificate
+    - 'true'
   UsingAmazonDevOpsGuru: !Equals
     - !Ref EnableAmazonDevOpsGuru
     - 'true'
@@ -287,7 +299,7 @@ Resources:
           Value: !Sub 'ChainlinkNode-${AWS::Partition}'
           PropagateAtLaunch: true
       TargetGroupARNs:
-        - !Ref ChainlinkNodeTargetGroup
+        - !If [UsingSSLCertificate, !Ref ChainlinkNodeTargetGroup, !Ref AWS::NoValue]
     UpdatePolicy:
       AutoScalingReplacingUpdate:
         WillReplace: true
@@ -447,7 +459,6 @@ Resources:
                 --env-file=/home/ec2-user/.chainlink/.env  smartcontract/chainlink:$latestimage local n \
                 -p /chainlink/.password \
                 -a /chainlink/.api
-              ignoreErrors: true
         init-cleanup:
           commands:
             01-remove-env:
@@ -589,8 +600,10 @@ Resources:
                   - !Ref DBSecret
                   - !Ref ApiSecret
                   - !Ref WalletSecret
+
   ELBSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
+    Condition: UsingSSLCertificate
     Properties:
       GroupDescription: 'Security Group to allow inbound https traffic and http to https redirected traffic'
       VpcId: !Ref VPCID
@@ -605,6 +618,7 @@ Resources:
           CidrIp: !Ref RemoteAccessCIDR
   ChainlinkNodeELB:
     Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    Condition: UsingSSLCertificate
     Properties:
       Name: CLNodeELB
       SecurityGroups: 
@@ -614,6 +628,7 @@ Resources:
         - !Ref PublicSubnet2ID
   ChainlinkNodeTargetGroup:
     Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Condition: UsingSSLCertificate
     Properties:
       HealthCheckEnabled: true
       HealthCheckIntervalSeconds: 15
@@ -627,6 +642,7 @@ Resources:
       VpcId: !Ref VPCID
   HTTPListener:
     Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Condition: UsingSSLCertificate
     Properties:
       DefaultActions:
         - Type: 'redirect'
@@ -642,6 +658,7 @@ Resources:
       Protocol: 'HTTP'
   HTTPSListener:
     Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Condition: UsingSSLCertificate
     Properties:
       LoadBalancerArn: !Ref ChainlinkNodeELB
       Certificates: 
@@ -652,6 +669,7 @@ Resources:
       Port: 443
       Protocol: 'HTTPS'
       SslPolicy: 'ELBSecurityPolicy-2016-08'
+
   ChainlinkLogGroup:
     Type: 'AWS::Logs::LogGroup'
     Properties:
