@@ -13,7 +13,7 @@ Deploying this Quick Start will create highly available Chainlink nodes using wi
 ## Prerequisite
 
 1. Create a key pair in your preferred region.
-2. Create a public certificate using Amazon Certificate Manager in your preferred region.
+2. If using a domain and SSL certificate to access your Chainlink node web GUI, create a public certificate using Amazon Certificate Manager in your preferred region.
 3. If using an existing VPC, make sure that it contains two public subnets, two private subnets, internet gateway, NAT gateways, and route tables.
 
 ## Manually creating env, api, and password files
@@ -21,9 +21,9 @@ Deploying this Quick Start will create highly available Chainlink nodes using wi
 1. Run create-env.sh to create the environment variable file for your Chainlink node
 
 ```
-cd $HOME/.chainlink/ && ./create-env.sh \
+cd /home/ec2-user/.chainlink/ && ./create-env.sh \
 ${chainNetwork} \
-${ethUrl} \
+${blockchainNodeUrl} \
 ${psqlUser} \
 $(aws secretsmanager get-secret-value --secret-id DBSecret --query "SecretString" --output text) \
 ${psqlHostname} \
@@ -34,14 +34,14 @@ ${psqlDb}
 2. Run create-password.sh to create your Chainlink node keystore password file
 
 ```
-cd $HOME/.chainlink/ && ./create-password.sh \
+cd /home/ec2-user/.chainlink/ && ./create-password.sh \
 $(aws secretsmanager get-secret-value --secret-id WalletSecret --query "SecretString" --output text)
 ```
 
 3. Run create-api.sh to create your Chainlink node API file
 
 ```
-cd $HOME/.chainlink/ && ./create-password.sh \
+cd /home/ec2-user/.chainlink/ && ./create-api.sh \
 ${apiUser} \
 $(aws secretsmanager get-secret-value --secret-id ApiSecret --query "SecretString" --output text)
 ```
@@ -57,7 +57,7 @@ cd /home/ec2-user/.chainlink && docker run -d \
 --name chainlink \
 -p 6688:6688 \
 -v /home/ec2-user/.chainlink:/chainlink \
---env-file=/home/ec2-user/.chainlink/.env  smartcontract/chainlink:$latestimage local n \
--p /chainlink/.password
+--env-file=/home/ec2-user/.chainlink/.env  smartcontract/chainlink:${latestimage} local n \
+-p /chainlink/.password \
 -a /chainlink/.api
 ```

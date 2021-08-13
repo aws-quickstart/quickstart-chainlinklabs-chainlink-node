@@ -436,7 +436,7 @@ Parameters:
     AllowedValues:
       - 'true'
       - 'false'
-    Default: 'false'
+    Default: 'true'
     Description: 'Enable Amazon DevOps Guru'
     Type: String
   AdministratorAccountId:
