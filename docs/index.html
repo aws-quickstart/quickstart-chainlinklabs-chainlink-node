@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.15">
-<title>Chainlink Node on the AWS Cloud</title>
+<title>Chainlink node on the AWS Cloud</title>
 <style>
 
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -825,7 +825,7 @@ p.footer-text a{color:#d7d8d8}
 <div id="toctitle"></div>
 <ul class="sectlevel1">
 <li><a href="#_overview">Overview</a></li>
-<li><a href="#_chainlink_node_on_aws">Chainlink Node on AWS</a></li>
+<li><a href="#_chainlink_node_on_aws">Chainlink node on AWS</a></li>
 <li><a href="#_aws_costs">AWS costs</a></li>
 <li><a href="#_software_licenses">Software licenses</a></li>
 <li><a href="#_architecture">Architecture</a></li>
@@ -845,11 +845,13 @@ p.footer-text a{color:#d7d8d8}
 <li><a href="#_post_deployment_steps">Post-deployment steps</a>
 <ul class="sectlevel2">
 <li><a href="#_access_your_chainlink_node">Access your Chainlink node</a></li>
-<li><a href="#_manually_creating_your_env_and_password_files_for_chainlink_node_docker_instance">Manually creating your .env and .password files for Chainlink node docker instance</a></li>
+<li><a href="#_fulfilling_requests_with_the_chainlink_node">Fulfilling requests with the Chainlink node</a></li>
+<li><a href="#_working_with_external_adapters">Working with external adapters</a></li>
+<li><a href="#_manually_creating_your_env_password_and_api_files_for_chainlink_node_instances">Manually creating your .env, .password, and .api files for Chainlink node instances</a></li>
 <li><a href="#_docker_run_command_to_start_chainlink_node_instances">Docker run command to start Chainlink node instances</a></li>
 </ul>
 </li>
-<li><a href="#_best_practices_for_using_chainlink_node_on_aws">Best practices for using Chainlink Node on AWS</a>
+<li><a href="#_best_practices_for_using_chainlink_node_on_aws">Best practices for using Chainlink node on AWS</a>
 <ul class="sectlevel2">
 <li><a href="#_failover_capabilities">Failover Capabilities</a></li>
 <li><a href="#_disaster_recovery">Disaster Recovery</a></li>
@@ -858,7 +860,6 @@ p.footer-text a{color:#d7d8d8}
 </li>
 <li><a href="#_security">Security</a></li>
 <li><a href="#_faq">FAQ</a></li>
-<li><a href="#_troubleshooting">Troubleshooting</a></li>
 <li><a href="#_customer_responsibility">Customer responsibility</a></li>
 <li><a href="#_parameter_reference">Parameter reference</a></li>
 <li><a href="#_send_us_feedback">Send us feedback</a></li>
@@ -871,7 +872,7 @@ p.footer-text a{color:#d7d8d8}
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
-<h2 id="_chainlink_node_on_the_aws_cloud" class="discrete text-center">Chainlink Node on the AWS Cloud</h2>
+<h2 id="_chainlink_node_on_the_aws_cloud" class="discrete text-center">Chainlink node on the AWS Cloud</h2>
 <h2 id="_quick_start_reference_deployment" class="discrete text-left text-center">Quick Start Reference Deployment</h2>
 <div class="imageblock text-center">
 <div class="content">
@@ -926,10 +927,10 @@ report bugs, or submit feature ideas for this Quick Start.
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>This guide provides instructions for deploying the Chainlink Node Quick Start reference architecture on the AWS Cloud.</p>
+<p>This guide provides instructions for deploying the Chainlink node Quick Start reference architecture on the AWS Cloud.</p>
 </div>
 <div class="paragraph">
-<p>This Quick Start is for users who enterprise users that want to run a highly available and secure Chainlink Node.</p>
+<p>This Quick Start is for users who enterprise users that want to run a highly available and secure Chainlink node.</p>
 </div></div></td>
 </tr>
 </tbody>
@@ -949,7 +950,7 @@ Amazon may share user-deployment information with the AWS Partner that collabora
 </div>
 </div>
 <div class="sect1">
-<h2 id="_chainlink_node_on_aws">Chainlink Node on AWS</h2>
+<h2 id="_chainlink_node_on_aws">Chainlink node on AWS</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><em><strong>This portion of the deployment guide is located at <code>docs/partner_editable/product_description.adoc</code></strong></em></p>
@@ -1035,14 +1036,14 @@ After you deploy the Quick Start, create <a href="https://docs.aws.amazon.com/aw
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Deploying this Quick Start for a new virtual private cloud (VPC) with
-default parameters builds the following Chainlink Node environment in the
+default parameters builds the following Chainlink node environment in the
 AWS Cloud.</p>
 </div>
 <div id="architecture1" class="imageblock">
 <div class="content">
 <img src="images/architecture_diagram_white.png" alt="Architecture">
 </div>
-<div class="title">Figure 1. Quick Start architecture for Chainlink Node on AWS</div>
+<div class="title">Figure 1. Quick Start architecture for Chainlink node on AWS</div>
 </div>
 <div class="paragraph">
 <p>As shown in <a href="#architecture1">Figure 1</a>, the Quick Start sets up the following:</p>
@@ -1103,7 +1104,7 @@ Shell (SSH) access to EC2 instances in public and private subnets.</p>
 <p>AWS Secrets Manager to store your credentials.</p>
 </li>
 <li>
-<p>Amazon DevOps Guru tracking of your Chainlink Node stack.</p>
+<p>Amazon DevOps Guru tracking of your Chainlink node stack.</p>
 </li>
 </ul>
 </div>
@@ -1331,7 +1332,7 @@ following the on-screen instructions.</p>
 <p>Create a key pair in your preferred region.</p>
 </li>
 <li>
-<p>Create a public certificate using Amazon Certificate Manager in your preferred region.</p>
+<p>If using a domain and SSL certificate, create a public certificate using Amazon Certificate Manager in your preferred region.</p>
 </li>
 <li>
 <p>Run a blockchain client or use a third party client. In the case of a third party Ethereum client, you can use the websocket endpoint from <a href="https://infura.io/docs/ethereum/wss/introduction.md">Infura</a> or <a href="https://docs.fiews.io/docs/getting-started">Fiews</a>. For other Ethereum clients, visit <a href="https://docs.chain.link/docs/run-an-ethereum-client/">Run an Ethereum Client</a>.</p>
@@ -1363,15 +1364,15 @@ following the on-screen instructions.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Deploy Chainlink Node into a new VPC</strong>. This option builds a new AWS environment consisting of the VPC, subnets, NAT gateways, security groups, bastion hosts, and other infrastructure components. It then deploys Chainlink Node into this new VPC.</p>
+<p><strong>Deploy Chainlink node into a new VPC</strong>. This option builds a new AWS environment consisting of the VPC, subnets, NAT gateways, security groups, bastion hosts, and other infrastructure components. It then deploys Chainlink node into this new VPC.</p>
 </li>
 <li>
-<p><strong>Deploy Chainlink Node into an existing VPC</strong>. This option provisions Chainlink Node in your existing AWS infrastructure.</p>
+<p><strong>Deploy Chainlink node into an existing VPC</strong>. This option provisions Chainlink node in your existing AWS infrastructure.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The Quick Start provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and Chainlink Node settings, as discussed later in this guide.</p>
+<p>The Quick Start provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and Chainlink node settings, as discussed later in this guide.</p>
 </div></div></td>
 </tr>
 </tbody>
@@ -1398,7 +1399,7 @@ following the on-screen instructions.</p>
 <p>Make sure that your AWS account is configured correctly, as discussed in the <a href="#_technical_requirements">Technical requirements</a> section.</p>
 </li>
 <li>
-<p>Use the region selector in the navigation bar to choose the AWS Region where you want to deploy your Chainlink Node.</p>
+<p>Use the region selector in the navigation bar to choose the AWS Region where you want to deploy your Chainlink node.</p>
 </li>
 </ol>
 </div>
@@ -1412,7 +1413,7 @@ following the on-screen instructions.</p>
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-If you’re deploying Chainlink Node into an existing VPC, make sure that your VPC has two private subnets in different Availability Zones. These subnets require NAT gateways in their route tables to allow instances to communicate with other Chainlink nodes without exposing them to the internet.
+If you’re deploying Chainlink node into an existing VPC, make sure that your VPC has two private subnets in different Availability Zones. These subnets require NAT gateways in their route tables to allow instances to communicate with other Chainlink nodes without exposing them to the internet.
 </td>
 </tr>
 </table>
@@ -1431,11 +1432,11 @@ If you’re deploying Chainlink Node into an existing VPC, make sure that your V
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_launch_permalink" target="_blank" rel="noopener">Deploy Chainlink Node into a new VPC on AWS</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_launch_permalink" target="_blank" rel="noopener">Deploy Chainlink node into a new VPC on AWS</a></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_template_permalink" target="_blank" rel="noopener">View template</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_launch_permalink" target="_blank" rel="noopener">Deploy Chainlink Node into an existing VPC on AWS</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_launch_permalink" target="_blank" rel="noopener">Deploy Chainlink node into an existing VPC on AWS</a></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_template_permalink" target="_blank" rel="noopener">View template</a></p></td>
 </tr>
 </tbody>
@@ -1461,7 +1462,7 @@ If you’re deploying Chainlink Node into an existing VPC, make sure that your V
 . On the <strong>Configure stack options</strong> page, you can <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html" target="_blank" rel="noopener">specify tags</a> (key-value pairs) for resources in your stack and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-add-tags.html" target="_blank" rel="noopener">set advanced options</a>. When you’re finished, choose <strong>Next</strong>.
 . On the <strong>Review</strong> page, review and confirm the template settings. Under <strong>Capabilities</strong>, select the two check boxes to acknowledge that the template creates IAM resources and might require the ability to automatically expand macros.
 . Choose <strong>Create stack</strong> to deploy the stack.
-. Monitor the status of the stack. When the status is <strong>CREATE_COMPLETE</strong>, the Chainlink Node deployment is ready.
+. Monitor the status of the stack. When the status is <strong>CREATE_COMPLETE</strong>, the Chainlink node deployment is ready.
 . To view the created resources, see the values displayed in the <strong>Outputs</strong> tab for the stack.</p>
 </div>
 <div class="paragraph">
@@ -1482,7 +1483,7 @@ If you’re deploying Chainlink Node into an existing VPC, make sure that your V
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Access the Chainlink node web GUI through the application load balancer endpoint or through a domain by adding the load balancer endpoint to your domain&#8217;s DNS record.</p>
+<p>If using a domain and SSL certificate created through AWS Certificate Manager, you can access the Chainlink node web GUI through the application load balancer endpoint or through your domain by adding the load balancer endpoint to your domain&#8217;s DNS record.</p>
 </li>
 <li>
 <p>By enabling TCP port forwarding on your bastion host, you are able to port forward the Chainlink node web GUI to your machine. As we are accessing the Chainlink node through a bastion, it is recommended to use SSH agent forwarding. Then connect to your bastion with SSH agent and TCP port forwarding. You can access the Chainlink node web GUI at <a href="http://localhost:6688/" class="bare">http://localhost:6688/</a>.</p>
@@ -1498,12 +1499,24 @@ ssh ec2-user@&lt;chainlink_node_internal_ip&gt; -L 6688:localhost:6688</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_manually_creating_your_env_and_password_files_for_chainlink_node_docker_instance">Manually creating your .env and .password files for Chainlink node docker instance</h3>
+<h3 id="_fulfilling_requests_with_the_chainlink_node">Fulfilling requests with the Chainlink node</h3>
 <div class="paragraph">
-<p>If the Chainlink node docker instances are stopped, then you will need to manually generate the .env and .password files to be able to start the Chainlink nodes.</p>
+<p>Once the quickstart is deployed, your Chainlink node is ready to interact with smart contracts and <a href="https://docs.chain.link/docs/fulfilling-requests/">fulfill requests</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_working_with_external_adapters">Working with external adapters</h3>
+<div class="paragraph">
+<p>External adapters are how Chainlink enables easy integration of custom computations and specialized APIs. External adapters are services which the core of the Chainlink node communicates via its API with a simple JSON specification. To get started, visit our <a href="https://docs.chain.link/docs/external-adapters/">external adapters documentation</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_manually_creating_your_env_password_and_api_files_for_chainlink_node_instances">Manually creating your .env, .password, and .api files for Chainlink node instances</h3>
+<div class="paragraph">
+<p>If the Chainlink node instances are stopped, then new .env, .password, and .api files will need to be created to start the Chainlink node.</p>
 </div>
 <div class="paragraph">
-<p>Generating the .env file:</p>
+<p><strong>Generating the .env file:</strong></p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -1518,12 +1531,22 @@ ${psqlDb}</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Generating the .password file:</p>
+<p><strong>Generating the .password file:</strong></p>
 </div>
 <div class="literalblock">
 <div class="content">
 <pre>cd /home/ec2-user/.chainlink/ &amp;&amp; ./create-password.sh \
 $(aws secretsmanager get-secret-value --secret-id WalletSecret --query "SecretString" --output text)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Generating the .api file:</strong></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>cd /home/ec2-user/.chainlink/ &amp;&amp; ./create-api.sh \
+${apiUser} \
+$(aws secretsmanager get-secret-value --secret-id ApiSecret --query "SecretString" --output text)</pre>
 </div>
 </div>
 </div>
@@ -1543,14 +1566,15 @@ cd /home/ec2-user/.chainlink &amp;&amp; docker run -d \
 -p 6688:6688 \
 -v /home/ec2-user/.chainlink:/chainlink \
 --env-file=/home/ec2-user/.chainlink/.env  smartcontract/chainlink:$latestimage local n \
--p /chainlink/.password</pre>
+-p /chainlink/.password
+-a /chainlink/.api</pre>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_best_practices_for_using_chainlink_node_on_aws">Best practices for using Chainlink Node on AWS</h2>
+<h2 id="_best_practices_for_using_chainlink_node_on_aws">Best practices for using Chainlink node on AWS</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_failover_capabilities">Failover Capabilities</h3>
@@ -1614,7 +1638,7 @@ cd /home/ec2-user/.chainlink &amp;&amp; docker run -d \
 <h2 id="_security">Security</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Chainlink node docker instance requires both an .env and .password file that contain plaintext passwords. It is recommended to remove the .env and .password files once the Chainlink node instance is running to prevent potential exposure of sensitive passwords.</p>
+<p>The Chainlink node docker instance requires the .env, .password, and .api file that contains plaintext passwords. It is recommended to remove the .env, .password, and .api files once the Chainlink node instance is running to prevent potential exposure of sensitive passwords.</p>
 </div>
 <div class="paragraph">
 <p><em><strong>This portion of the deployment guide is located at <code>docs/partner_editable/faq_troubleshooting.adoc</code></strong></em></p>
@@ -1652,13 +1676,41 @@ When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, 
 <div class="paragraph">
 <p><strong>A.</strong> Launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a location other than an S3 bucket, you might encounter template-size limitations. For more information, see <a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html" target="_blank" rel="noopener">AWS CloudFormation quotas</a>.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_troubleshooting">Troubleshooting</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>&lt;Steps for troubleshooting the deployment.&gt;</p>
+<p><strong>Q.</strong> Are there other environment variables I can add to my Chainlink node?</p>
+</div>
+<div class="paragraph">
+<p><strong>A.</strong> Yes, you can find a list of the environment variables and explanation at the <a href="https://docs.chain.link/docs/configuration-variables/">configuration variables documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Q.</strong> I encountered a <strong>error reading password: open /chainlink/.password: no such file or directory</strong> error message when starting my Chainlink node.</p>
+</div>
+<div class="paragraph">
+<p><strong>A.</strong> Make sure that the .password files exist inside the Chainlink root directory. If the .password file does not exist, run the command below to create the .password file:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>cd /home/ec2-user/.chainlink/ &amp;&amp; ./create-password.sh \
+$(aws secretsmanager get-secret-value --secret-id WalletSecret --query "SecretString" --output text)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Q.</strong> I encountered a <strong>creating application: parse "XXXXXX": invalid URI for request</strong> error message when starting my Chainlink node.</p>
+</div>
+<div class="paragraph">
+<p><strong>A.</strong> This error typically happens when there is a parsing error within the PostgreSQL connection string (postgresql://) in the DATABASE_URL variable. Double-check the .env file for any errors in format or spelling. You can manually edit the connection string or run the command below to create a new .env file:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>cd /home/ec2-user/.chainlink/ &amp;&amp; ./create-env.sh \
+${chainNetwork} \
+${blockchainNodeUrl} \
+${psqlUser} \
+$(aws secretsmanager get-secret-value --secret-id DBSecret --query "SecretString" --output text) \
+${psqlHostname} \
+${psqlPort} \
+${psqlDb}</pre>
+</div>
 </div>
 </div>
 </div>
