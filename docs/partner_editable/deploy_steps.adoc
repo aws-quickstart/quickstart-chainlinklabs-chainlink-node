@@ -4,8 +4,6 @@
 . Make sure that your AWS account is configured correctly, as discussed in the link:#_technical_requirements[Technical requirements] section.
 . Use the region selector in the navigation bar to choose the AWS Region where you want to deploy your {partner-product-short-name}.
 
-NOTE: The {partner-product-short-name} AWS QuickStart will deploy Aurora PostgreSQL databases. Aurora PostgreSQL compatibility isn’t currently supported in all AWS Regions. For a current list of supported regions, see the https://docs.aws.amazon.com/general/latest/gr/rande.html#aurora[AWS Regions and Endpoints webpage].
-
 // Optional based on Marketplace listing. Not to be edited
 ifdef::marketplace_subscription[]
 === Subscribe to the {partner-product-short-name} AMI

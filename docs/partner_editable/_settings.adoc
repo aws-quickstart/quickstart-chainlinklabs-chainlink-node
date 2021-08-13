@@ -1,8 +1,8 @@
 // Change the following attributes.
 :quickstart-project-name: quickstart-chainlinklabs-chainlink-node
-:partner-product-name: Chainlink Node
+:partner-product-name: Chainlink node
 // For the following attribute, if you have no short name, enter the same name as partner-product-name.
-:partner-product-short-name: Chainlink Node
+:partner-product-short-name: Chainlink node
 // If there's no partner, comment partner-company-name.
 :partner-company-name: Chainlink Labs
 :doc-month: August
