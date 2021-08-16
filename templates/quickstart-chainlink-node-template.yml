@@ -449,23 +449,26 @@ Resources:
             04-run-chainlink-docker:
               command: |
                 latestimage=$(curl -s -S "https://registry.hub.docker.com/v2/repositories/smartcontract/chainlink/tags/" | jq -r '."results"[]["name"]' | head -n 1)
-                cd /home/ec2-user/.chainlink && docker run -d \
+                docker run -d \
                 --log-driver=awslogs \
                 --log-opt awslogs-group=ChainlinkLogs \
                 --restart unless-stopped \
                 --name chainlink \
                 -p 6688:6688 \
                 -v /home/ec2-user/.chainlink:/chainlink \
-                --env-file=/home/ec2-user/.chainlink/.env  smartcontract/chainlink:$latestimage local n \
+                --env-file=/home/ec2-user/.chainlink/.env  smartcontract/chainlink:${latestimage} local n \
                 -p /chainlink/.password \
                 -a /chainlink/.api
+              cwd: "/home/ec2-user/.chainlink"
         init-cleanup:
           commands:
-            01-remove-env:
+            01-init-cooldown:
+              command: sleep 60
+            02-remove-env:
               command: rm -rf /home/ec2-user/.chainlink/.env
-            02-remove-api:
+            03-remove-api:
               command: rm -rf /home/ec2-user/.chainlink/.api
-            03-remove-password:
+            04-remove-password:
               command: rm -rf /home/ec2-user/.chainlink/.password
     Properties:
       AssociatePublicIpAddress: false
@@ -583,11 +586,12 @@ Resources:
                   - 'cloudwatch:ListMetrics'
                 Resource:
                   - '*'
+              # Can we make an exception for the cloudwatch resource wildcard -
+              # https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazoncloudwatch.html
               - Effect: Allow
                 Action:
                   - 'ec2:DescribeInstances'
                 Resource:
-                  # - '*'
                   - !Sub arn:${AWS::Partition}:ec2:*:*:*
         - PolicyName: SecretsPolicy
           PolicyDocument:
@@ -765,15 +769,24 @@ Resources:
           Principal:
             Service: devops-guru.amazonaws.com
           Action:
-            - kms:GenerateDataKey*
+            - kms:GenerateDataKeyPairWithoutPlaintext
+            - kms:GenerateDataKeyPair
+            - kms:GenerateDataKey
+            - kms:GenerateDataKeyWithoutPlaintext
             - kms:Decrypt
-          Resource: '*'
+          # Resource: '*'
+          Resource:
+            - !Sub arn:${AWS::Partition}:kms:*:*:*
         - Sid: Allow Administration
           Effect: Allow
           Principal:
             AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
-          Action: kms:*
-          Resource: '*'
+          Action: 
+            - 'kms:*'
+          Resource: 
+            - '*'
+        # Can we add an exception for kms:* and kms resource wildcard * - Reduces the risk of the CMK becoming unmanageable so granting the root account full access to CMK
+        # https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default-allow-root-enable-iam
   DevOpsGuruMonitoring:
     Type: AWS::DevOpsGuru::ResourceCollection
     Condition: UsingAmazonDevOpsGuru
