@@ -4,6 +4,13 @@ Metadata:
   QuickStartDocumentation:
     EntrypointName: 'Launch into an existing VPC'
     Order: '2'
+  cfn-lint:
+    config:
+      ignore_checks:
+        - E9101
+        - E9007
+      ignore_reasons:
+        E9101: Currently do to require parameters, on submodule. Will be updated when submodule is.
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -147,7 +154,6 @@ Metadata:
         default: Quick Start S3 key prefix
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
-  cfn-lint: { config: { ignore_checks: [E9007] } }
 Parameters:
   PrivateSubnet1ID:
     Description: ID of the private Subnet in Availability Zone 1

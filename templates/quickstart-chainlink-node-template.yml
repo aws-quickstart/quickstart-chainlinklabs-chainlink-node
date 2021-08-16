@@ -1,6 +1,13 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Chainlink Node Quick Start - Infrastructure (qs-1s6adgs8e)
 Metadata:
+  cfn-lint:
+    config:
+      ignore_checks:
+        - E9101
+        - E9007
+      ignore_reasons:
+        E9101: Currently do to require parameters, on submodule. Will be updated when submodule is.
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -106,7 +113,6 @@ Metadata:
         default: Quick Start S3 key prefix
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
-  cfn-lint: { config: { ignore_checks: [E9007] } }
 Parameters:
   PrivateSubnet1ID:
     Description: ID of the private Subnet in Availability Zone 1
@@ -755,6 +761,13 @@ Resources:
         - Endpoint: !Ref EmailAddress
           Protocol: email
   DevOpsGuruCMK:
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - EIAMPolicyActionWildcard
+          ignore_reasons:
+            EIAMPolicyActionWildcard: Reduces the risk of the CMK becoming unmanageable so granting the root account full access to CMK https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default-allow-root-enable-iam
     Type: AWS::KMS::Key
     Condition: UsingAmazonDevOpsGuru
     Properties:
@@ -785,8 +798,6 @@ Resources:
             - 'kms:*'
           Resource: 
             - '*'
-        # Can we add an exception for kms:* and kms resource wildcard * - Reduces the risk of the CMK becoming unmanageable so granting the root account full access to CMK
-        # https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default-allow-root-enable-iam
   DevOpsGuruMonitoring:
     Type: AWS::DevOpsGuru::ResourceCollection
     Condition: UsingAmazonDevOpsGuru
