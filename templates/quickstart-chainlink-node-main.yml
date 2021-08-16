@@ -4,6 +4,13 @@ Metadata:
   QuickStartDocumentation:
     EntrypointName: 'Launch into a new VPC'
     Order: '1'
+  cfn-lint:
+    config:
+      ignore_checks:
+        - E9101
+        - E9007
+      ignore_reasons:
+        E9101: Currently do to require parameters, on submodule. Will be updated when submodule is.
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -152,7 +159,6 @@ Metadata:
         default: Quick Start S3 key prefix
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
-  cfn-lint: { config: { ignore_checks: [E9007] } }
 Parameters:
   AvailabilityZones:
     Description: 'Select 2 Availability Zones to use for the subnets in the VPC.'
@@ -436,7 +442,7 @@ Parameters:
     AllowedValues:
       - 'true'
       - 'false'
-    Default: 'false'
+    Default: 'true'
     Description: 'Enable Amazon DevOps Guru'
     Type: String
   AdministratorAccountId:

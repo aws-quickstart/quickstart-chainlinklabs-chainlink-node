@@ -1,6 +1,13 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Chainlink Node Quick Start - Infrastructure (qs-1s6adgs8e)
 Metadata:
+  cfn-lint:
+    config:
+      ignore_checks:
+        - E9101
+        - E9007
+      ignore_reasons:
+        E9101: Currently do to require parameters, on submodule. Will be updated when submodule is.
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -106,7 +113,6 @@ Metadata:
         default: Quick Start S3 key prefix
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
-  cfn-lint: { config: { ignore_checks: [E9007] } }
 Parameters:
   PrivateSubnet1ID:
     Description: ID of the private Subnet in Availability Zone 1
@@ -208,10 +214,10 @@ Parameters:
   SSLCertificateARN:
     Description: 'ARN of the SSL Certificate created through AWS Certificate Manager.'
     Type: String
-  DBName: 
+  DBName:
     Description: 'Name of the Amazon Aurora database.'
     Type: String
-  DBMasterUsername: 
+  DBMasterUsername:
     Description: 'The database admin account username.'
     Type: String
   DBMasterUserPassword:
@@ -241,14 +247,14 @@ Parameters:
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: The Quick Start bucket name can include numbers, lowercase
-      letters, uppercase letters, and hyphens (-). It cannot start or end with a 
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a
       hyphen (-).
     Default: aws-quickstart
-    Description: Name of the S3 bucket for your copy of the Quick Start assets. 
-      Keep the default name unless you are customizing the template. 
-      Changing the name updates code references to point to a new Quick 
-      Start location. This name can include numbers, lowercase letters, 
-      uppercase letters, and hyphens, but do not start or end with a hyphen (-). 
+    Description: Name of the S3 bucket for your copy of the Quick Start assets.
+      Keep the default name unless you are customizing the template.
+      Changing the name updates code references to point to a new Quick
+      Start location. This name can include numbers, lowercase letters,
+      uppercase letters, and hyphens, but do not start or end with a hyphen (-).
       See https://aws-quickstart.github.io/option1.html.
     Type: String
   QSS3KeyPrefix:
@@ -256,20 +262,20 @@ Parameters:
     ConstraintDescription: The Quick Start S3 key prefix can include numbers, lowercase letters,
       uppercase letters, hyphens (-), and forward slashes (/).
     Default: quickstart-chainlinklabs-chainlink-node/
-    Description: S3 key prefix that is used to simulate a directory for your copy of the 
-      Quick Start assets. Keep the default prefix unless you are customizing 
-      the template. Changing this prefix updates code references to point to 
-      a new Quick Start location. This prefix can include numbers, lowercase 
-      letters, uppercase letters, hyphens (-), and forward slashes (/). End with a forward slash. 
-      See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html 
+    Description: S3 key prefix that is used to simulate a directory for your copy of the
+      Quick Start assets. Keep the default prefix unless you are customizing
+      the template. Changing this prefix updates code references to point to
+      a new Quick Start location. This prefix can include numbers, lowercase
+      letters, uppercase letters, hyphens (-), and forward slashes (/). End with a forward slash.
+      See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
       and https://aws-quickstart.github.io/option1.html.
     Type: String
   QSS3BucketRegion:
     Default: 'us-east-1'
-    Description: 'AWS Region where the Quick Start S3 bucket (QSS3BucketName) is 
-    hosted. Keep the default Region unless you are customizing the template. 
-    Changing this Region updates code references to point to a new Quick Start location. 
-    When using your own bucket, specify the Region. 
+    Description: 'AWS Region where the Quick Start S3 bucket (QSS3BucketName) is
+    hosted. Keep the default Region unless you are customizing the template.
+    Changing this Region updates code references to point to a new Quick Start location.
+    When using your own bucket, specify the Region.
     See https://aws-quickstart.github.io/option1.html.'
     Type: String
 Conditions:
@@ -323,25 +329,25 @@ Resources:
         common-init:
           commands:
             01-store-chainnetwork-var:
-              command: !Sub 
+              command: !Sub
                 echo 'chainNetwork=${BlockchainNetwork}' >> /etc/environment
             02-store-blockchainrpc-var:
-              command: !Sub 
+              command: !Sub
                 echo 'blockchainNodeUrl=${BlockchainNodeUrl}' >> /etc/environment
             03-store-dbuser-var:
-              command: !Sub 
+              command: !Sub
                 echo 'psqlUser=${DBMasterUsername}' >> /etc/environment
             04-store-dbhostname-var:
-              command: !Sub 
+              command: !Sub
                 echo 'psqlHostname=${DBHostname}' >> /etc/environment
             05-store-dbport-var:
-              command: !Sub 
+              command: !Sub
                 echo 'psqlPort=${DBPort}' >> /etc/environment
             06-store-dbname-var:
-              command: !Sub 
+              command: !Sub
                 echo 'psqlDb=${DBName}' >> /etc/environment
             07-store-apiuser-var:
-              command: !Sub 
+              command: !Sub
                 echo 'apiUser=${ChainlinkNodeGUIEmail}' >> /etc/environment
             08-set-region:
               command: !Sub
@@ -449,23 +455,26 @@ Resources:
             04-run-chainlink-docker:
               command: |
                 latestimage=$(curl -s -S "https://registry.hub.docker.com/v2/repositories/smartcontract/chainlink/tags/" | jq -r '."results"[]["name"]' | head -n 1)
-                cd /home/ec2-user/.chainlink && docker run -d \
+                docker run -d \
                 --log-driver=awslogs \
                 --log-opt awslogs-group=ChainlinkLogs \
                 --restart unless-stopped \
                 --name chainlink \
                 -p 6688:6688 \
                 -v /home/ec2-user/.chainlink:/chainlink \
-                --env-file=/home/ec2-user/.chainlink/.env  smartcontract/chainlink:$latestimage local n \
+                --env-file=/home/ec2-user/.chainlink/.env  smartcontract/chainlink:${latestimage} local n \
                 -p /chainlink/.password \
                 -a /chainlink/.api
+              cwd: "/home/ec2-user/.chainlink"
         init-cleanup:
           commands:
-            01-remove-env:
+            01-init-cooldown:
+              command: sleep 60
+            02-remove-env:
               command: rm -rf /home/ec2-user/.chainlink/.env
-            02-remove-api:
+            03-remove-api:
               command: rm -rf /home/ec2-user/.chainlink/.api
-            03-remove-password:
+            04-remove-password:
               command: rm -rf /home/ec2-user/.chainlink/.password
     Properties:
       AssociatePublicIpAddress: false
@@ -533,7 +542,7 @@ Resources:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Path: /
-      Roles: 
+      Roles:
         - !Ref ChainlinkNodeRole
   AuthenticatedS3Policy:
     Type: AWS::IAM::Policy
@@ -568,7 +577,7 @@ Resources:
           PolicyDocument:
             Version: 2012-10-17
             Statement:
-              - Effect: Allow 
+              - Effect: Allow
                 Action:
                   - 'logs:CreateLogStream'
                   - 'logs:CreateLogGroup'
@@ -583,11 +592,12 @@ Resources:
                   - 'cloudwatch:ListMetrics'
                 Resource:
                   - '*'
+              # Can we make an exception for the cloudwatch resource wildcard -
+              # https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazoncloudwatch.html
               - Effect: Allow
                 Action:
                   - 'ec2:DescribeInstances'
                 Resource:
-                  # - '*'
                   - !Sub arn:${AWS::Partition}:ec2:*:*:*
         - PolicyName: SecretsPolicy
           PolicyDocument:
@@ -621,9 +631,9 @@ Resources:
     Condition: UsingSSLCertificate
     Properties:
       Name: CLNodeELB
-      SecurityGroups: 
+      SecurityGroups:
         - !Ref ELBSecurityGroup
-      Subnets:  
+      Subnets:
         - !Ref PublicSubnet1ID
         - !Ref PublicSubnet2ID
   ChainlinkNodeTargetGroup:
@@ -661,7 +671,7 @@ Resources:
     Condition: UsingSSLCertificate
     Properties:
       LoadBalancerArn: !Ref ChainlinkNodeELB
-      Certificates: 
+      Certificates:
         - CertificateArn: !Ref SSLCertificateARN
       DefaultActions:
         - Type: 'forward'
@@ -751,6 +761,13 @@ Resources:
         - Endpoint: !Ref EmailAddress
           Protocol: email
   DevOpsGuruCMK:
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - EIAMPolicyActionWildcard
+          ignore_reasons:
+            EIAMPolicyActionWildcard: Reduces the risk of the CMK becoming unmanageable so granting the root account full access to CMK https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default-allow-root-enable-iam
     Type: AWS::KMS::Key
     Condition: UsingAmazonDevOpsGuru
     Properties:
@@ -765,20 +782,27 @@ Resources:
           Principal:
             Service: devops-guru.amazonaws.com
           Action:
-            - kms:GenerateDataKey*
+            - kms:GenerateDataKeyPairWithoutPlaintext
+            - kms:GenerateDataKeyPair
+            - kms:GenerateDataKey
+            - kms:GenerateDataKeyWithoutPlaintext
             - kms:Decrypt
-          Resource: '*'
+          # Resource: '*'
+          Resource:
+            - !Sub arn:${AWS::Partition}:kms:*:*:*
         - Sid: Allow Administration
           Effect: Allow
           Principal:
             AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
-          Action: kms:*
-          Resource: '*'
+          Action:
+            - 'kms:*'
+          Resource:
+            - '*'
   DevOpsGuruMonitoring:
     Type: AWS::DevOpsGuru::ResourceCollection
     Condition: UsingAmazonDevOpsGuru
     Properties:
       ResourceCollectionFilter:
         CloudFormation:
-          StackNames: 
+          StackNames:
             - "*"

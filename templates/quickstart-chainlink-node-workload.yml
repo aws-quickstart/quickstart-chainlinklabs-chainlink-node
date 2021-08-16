@@ -4,6 +4,13 @@ Metadata:
   QuickStartDocumentation:
     EntrypointName: 'Launch into an existing VPC'
     Order: '2'
+  cfn-lint:
+    config:
+      ignore_checks:
+        - E9101
+        - E9007
+      ignore_reasons:
+        E9101: Currently do to require parameters, on submodule. Will be updated when submodule is.
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -147,7 +154,6 @@ Metadata:
         default: Quick Start S3 key prefix
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
-  cfn-lint: { config: { ignore_checks: [E9007] } }
 Parameters:
   PrivateSubnet1ID:
     Description: ID of the private Subnet in Availability Zone 1
@@ -338,21 +344,21 @@ Parameters:
     AllowedPattern: '.+'
     Default: 'arn:aws:acm:region:account-id:certificate'
     Type: String
-  DBName: 
+  DBName:
     AllowedPattern: '[a-zA-Z0-9]*'
     Description: 'Name of the Amazon Aurora database.'
     MaxLength: '64'
     MinLength: '0'
     Default: 'PostgresDB'
     Type: String
-  DBAutoMinorVersionUpgrade: 
-    AllowedValues: 
+  DBAutoMinorVersionUpgrade:
+    AllowedValues:
       - 'true'
       - 'false'
     Default: 'false'
     Description: 'Select true to set up auto minor version upgrade.'
     Type: String
-  DBBackupRetentionPeriod: 
+  DBBackupRetentionPeriod:
     Default: '7'
     Description: 'The number of days for which automatic database snapshots are retained.'
     Type: String
@@ -387,7 +393,7 @@ Parameters:
     Default: db.t3.medium
     Description: 'The compute and memory capacity class of the database instance.'
     Type: String
-  DBMasterUsername: 
+  DBMasterUsername:
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
     ConstraintDescription: 'Must begin with a letter and contain only alphanumeric characters.'
     Default: postgresadmin
@@ -412,7 +418,7 @@ Parameters:
     AllowedValues:
       - 'true'
       - 'false'
-    Default: 'false'
+    Default: 'true'
     Description: 'Enable Amazon DevOps Guru'
     Type: String
   AdministratorAccountId:
@@ -428,14 +434,14 @@ Parameters:
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: The Quick Start bucket name can include numbers, lowercase
-      letters, uppercase letters, and hyphens (-). It cannot start or end with a 
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a
       hyphen (-).
     Default: aws-quickstart
-    Description: Name of the S3 bucket for your copy of the Quick Start assets. 
-      Keep the default name unless you are customizing the template. 
-      Changing the name updates code references to point to a new Quick 
-      Start location. This name can include numbers, lowercase letters, 
-      uppercase letters, and hyphens, but do not start or end with a hyphen (-). 
+    Description: Name of the S3 bucket for your copy of the Quick Start assets.
+      Keep the default name unless you are customizing the template.
+      Changing the name updates code references to point to a new Quick
+      Start location. This name can include numbers, lowercase letters,
+      uppercase letters, and hyphens, but do not start or end with a hyphen (-).
       See https://aws-quickstart.github.io/option1.html.
     Type: String
   QSS3KeyPrefix:
@@ -443,20 +449,20 @@ Parameters:
     ConstraintDescription: The Quick Start S3 key prefix can include numbers, lowercase letters,
       uppercase letters, hyphens (-), and forward slashes (/).
     Default: quickstart-chainlink-node/
-    Description: S3 key prefix that is used to simulate a directory for your copy of the 
-      Quick Start assets. Keep the default prefix unless you are customizing 
-      the template. Changing this prefix updates code references to point to 
-      a new Quick Start location. This prefix can include numbers, lowercase 
-      letters, uppercase letters, hyphens (-), and forward slashes (/). End with a forward slash. 
-      See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html 
+    Description: S3 key prefix that is used to simulate a directory for your copy of the
+      Quick Start assets. Keep the default prefix unless you are customizing
+      the template. Changing this prefix updates code references to point to
+      a new Quick Start location. This prefix can include numbers, lowercase
+      letters, uppercase letters, hyphens (-), and forward slashes (/). End with a forward slash.
+      See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
       and https://aws-quickstart.github.io/option1.html.
     Type: String
   QSS3BucketRegion:
     Default: 'us-east-1'
-    Description: 'AWS Region where the Quick Start S3 bucket (QSS3BucketName) is 
-    hosted. Keep the default Region unless you are customizing the template. 
-    Changing this Region updates code references to point to a new Quick Start location. 
-    When using your own bucket, specify the Region. 
+    Description: 'AWS Region where the Quick Start S3 bucket (QSS3BucketName) is
+    hosted. Keep the default Region unless you are customizing the template.
+    Changing this Region updates code references to point to a new Quick Start location.
+    When using your own bucket, specify the Region.
     See https://aws-quickstart.github.io/option1.html.'
     Type: String
 Conditions:
@@ -467,7 +473,7 @@ Resources:
   BastionStack:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
-      TemplateURL: 
+      TemplateURL:
         !Sub
           - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
