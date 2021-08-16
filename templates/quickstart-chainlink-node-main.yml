@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Chainlink node Quick Start - Main
+Description: Chainlink node Quick Start - Main (qs-1s6adgs60)
 Metadata:
   QuickStartDocumentation:
     EntrypointName: 'Launch into a new VPC'

@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Chainlink Node Quick Start - Infrastructure
+Description: Chainlink Node Quick Start - Infrastructure (qs-1s6adgs8e)
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
