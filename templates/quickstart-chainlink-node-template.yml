@@ -7,7 +7,7 @@ Metadata:
         - E9101
         - E9007
       ignore_reasons:
-        E9101: Currently do to require parameters, on submodule. Will be updated when submodule is.
+        E9101: Currently due to require parameters, on submodule. Will be updated when submodule is.
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -592,8 +592,6 @@ Resources:
                   - 'cloudwatch:ListMetrics'
                 Resource:
                   - '*'
-              # Can we make an exception for the cloudwatch resource wildcard -
-              # https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazoncloudwatch.html
               - Effect: Allow
                 Action:
                   - 'ec2:DescribeInstances'
@@ -610,7 +608,6 @@ Resources:
                   - !Ref DBSecret
                   - !Ref ApiSecret
                   - !Ref WalletSecret
-
   ELBSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Condition: UsingSSLCertificate
@@ -679,7 +676,6 @@ Resources:
       Port: 443
       Protocol: 'HTTPS'
       SslPolicy: 'ELBSecurityPolicy-2016-08'
-
   ChainlinkLogGroup:
     Type: 'AWS::Logs::LogGroup'
     Properties:
@@ -708,7 +704,6 @@ Resources:
       Name: WalletSecret
       Description: Secret password for Chainlink node wallet password
       SecretString: !Sub ${NodeWalletPassword}
-
   AdministrationRole:
     Type: AWS::IAM::Role
     Condition: UsingAmazonDevOpsGuru
@@ -787,7 +782,6 @@ Resources:
             - kms:GenerateDataKey
             - kms:GenerateDataKeyWithoutPlaintext
             - kms:Decrypt
-          # Resource: '*'
           Resource:
             - !Sub arn:${AWS::Partition}:kms:*:*:*
         - Sid: Allow Administration

@@ -514,7 +514,6 @@ Resources:
         Subnet1ID: !Ref PrivateSubnet1ID
         Subnet2ID: !Ref PrivateSubnet2ID
         VPCID: !Ref VPCID
-
   ChainlinkNodeStack:
     Type: AWS::CloudFormation::Stack
     Properties:
