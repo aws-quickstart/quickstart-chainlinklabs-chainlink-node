@@ -1,23 +1,97 @@
-// Add steps as necessary for accessing the software, post-configuration, and testing. Don’t include full usage instructions for your software, but add links to your product documentation for that information.
-//Should any sections not be applicable, remove them
-
-== Test the deployment
-// If steps are required to test the deployment, add them here. If not, remove the heading
-
 == Post-deployment steps
-// If post-deployment steps are required, add them here. If not, remove the heading
+
+=== Access your Chainlink node
+You can access your Chainlink node through the web graphical user interface. There are two options on accessing the page.
+
+1. If using a domain and SSL certificate created through AWS Certificate Manager, you can access the Chainlink node web GUI through the application load balancer endpoint or through your domain by adding the load balancer endpoint to your domain's DNS record.
+
+2. By enabling TCP port forwarding on your bastion host, you are able to port forward the Chainlink node web GUI to your machine. As we are accessing the Chainlink node through a bastion, it is recommended to use SSH agent forwarding. Then connect to your bastion with SSH agent and TCP port forwarding. You can access the Chainlink node web GUI at http://localhost:6688/. 
+
+....
+ssh-add <your_ssh_key>
+ssh ec2-user@<bastion_host_public_ip> -A -L 6688:localhost:6688
+ssh ec2-user@<chainlink_node_internal_ip> -L 6688:localhost:6688
+....
+
+=== Fulfilling requests with the Chainlink node
+Once the quickstart is deployed, your Chainlink node is ready to interact with smart contracts and https://docs.chain.link/docs/fulfilling-requests/[fulfill requests].
+
+=== Working with external adapters
+External adapters are how Chainlink enables easy integration of custom computations and specialized APIs. External adapters are services which the core of the Chainlink node communicates via its API with a simple JSON specification. To get started, visit our https://docs.chain.link/docs/external-adapters/[external adapters documentation].
+
+=== Manually creating your .env, .password, and .api files for Chainlink node instances
+If the Chainlink node instances are stopped, then new .env, .password, and .api files will need to be created to start the Chainlink node.
+
+*Generating the .env file:*
+....
+cd /home/ec2-user/.chainlink/ && ./create-env.sh \
+${chainNetwork} \
+${blockchainNodeUrl} \
+${psqlUser} \
+$(aws secretsmanager get-secret-value --secret-id DBSecret --query "SecretString" --output text) \
+${psqlHostname} \
+${psqlPort} \
+${psqlDb}
+....
+
+*Generating the .password file:*
+....
+cd /home/ec2-user/.chainlink/ && ./create-password.sh \
+$(aws secretsmanager get-secret-value --secret-id WalletSecret --query "SecretString" --output text)
+....
+
+*Generating the .api file:*
+....
+cd /home/ec2-user/.chainlink/ && ./create-api.sh \
+${apiUser} \
+$(aws secretsmanager get-secret-value --secret-id ApiSecret --query "SecretString" --output text)
+....
+
+=== Docker run command to start Chainlink node instances
+To manually run the latest image of Chainlink node docker instance:
+
+....
+latestimage=$(curl -s -S "https://registry.hub.docker.com/v2/repositories/smartcontract/chainlink/tags/" | jq -r '."results"[]["name"]' | head -n 1)
+cd /home/ec2-user/.chainlink && docker run -d \
+--log-driver=awslogs \
+--log-opt awslogs-group=ChainlinkLogs \
+--restart unless-stopped \
+--name chainlink \
+-p 6688:6688 \
+-v /home/ec2-user/.chainlink:/chainlink \
+--env-file=/home/ec2-user/.chainlink/.env  smartcontract/chainlink:$latestimage local n \
+-p /chainlink/.password
+-a /chainlink/.api
+....
 
 == Best practices for using {partner-product-short-name} on AWS
-// Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-_Add any best practices for using the software._
+=== Failover Capabilities
+To ensure there is very minimal downtime, failover capabilities are required on both the Chainlink and Ethereum clients so that if any one server fails, the service is still online. The Amazon EC2 Auto Scaling group has two Chainlink nodes: one active Chainlink node and one standby Chainlink node. Data from both the Chainlink and Ethereum clients are stored in a PostgreSQL database which needs to be highly available.
+
+=== Disaster Recovery
+Problems occur and when they do, the right processes need to be in-place to ensure that as little downtime as possible occurs. The main impediment to incurring large amounts of downtime in the context of Chainlink node operators is a fully corrupted Ethereum node that requires a re-sync.
+
+Due to the challenge of recovering an Ethereum client, we recommend:
+
+- Daily snapshots of the Ethereum chain on a separate server than what the Chainlink node is connected to.
+- An Ethereum client start-up process that pulls down the latest template of the chain and syncs it to the latest height.
+
+With this process in-place, the elapsed time of full disaster is kept to a minimum.
+
+=== Active Monitoring
+
+To be proactive in detecting any issues before or when they occur, active monitoring needs to be in place. The areas where we recommend to monitor are:
+
+- (Minimum Required) ETH balance of the wallet address assigned to the node.
+- Errored job runs.
+- Operator UI port to be open and responsive. (Usually: 6688)
+- Ethereum http and websocket ports to be open and responsive. (Usually: 8545 & 8546)
+- Ethereum client disk, RAM and CPU usage.
+
+Monitoring of the Chainlink nodes are available through Amazon CloudWatch.
 
 == Security
-// Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-_Add any security-related information._
+The Chainlink node docker instance requires the .env, .password, and .api file that contains plaintext passwords. It is recommended to remove the .env, .password, and .api files once the Chainlink node instance is running to prevent potential exposure of sensitive passwords.
 
-== Other useful information
-//Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
-
-_Add any other details that will help the customer use the software on AWS._

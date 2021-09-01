@@ -3,4 +3,15 @@
 // Include links if helpful. 
 // You don't need to list AWS services or point to general info about AWS; the boilerplate already covers this.
 
-This Quick Start also assumes familiarity with <knowledge expectations specific to this Quick Start>.
+This Quick Start also assumes familiarity with basic concepts in the areas of networking and DevOps. This deployment guide also requires a moderate level of familiarity with AWS services.
+
+* https://aws.amazon.com/ec2/[Amazon EC2]
+* https://aws.amazon.com/vpc/[Amazon VPC]
+* https://aws.amazon.com/cloudwatch/[Amazon CloudWatch]
+* https://aws.amazon.com/devops-guru/[Amazon DevOps Guru]
+* https://aws.amazon.com/rds/aurora/?aurora-whats-new.sort-by=item.additionalFields.postDateTime&aurora-whats-new.sort-order=desc[Amazon Aurora PostgreSQL]
+* https://aws.amazon.com/cloudformation/[AWS CloudFormation]
+
+If you’re new to AWS, visit the https://aws.amazon.com/getting-started/[Getting Started Resource Center] and the https://aws.amazon.com/training/[AWS Training and Certification] for materials and programs that can help you develop the skills to design, deploy, and operate your infrastructure and applications on the AWS Cloud.
+
+We recommend that you also become familiar with running https://docs.chain.link/docs/running-a-chainlink-node/[Chainlink nodes].
