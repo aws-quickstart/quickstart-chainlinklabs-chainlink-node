@@ -1,10 +1,16 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Chainlink node Quick Start - Workload
+Description: Chainlink node Quick Start - Workload (qs-1s6adgs8m)
 Metadata:
   QuickStartDocumentation:
     EntrypointName: 'Launch into an existing VPC'
     Order: '2'
-  LICENSE: MIT License (MIT)
+  cfn-lint:
+    config:
+      ignore_checks:
+        - E9101
+        - E9007
+      ignore_reasons:
+        E9101: Currently do to require parameters, on submodule. Will be updated when submodule is.
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -43,6 +49,7 @@ Metadata:
           - ChainlinkNodeGUIPassword
           - BlockchainNodeUrl
           - NodeWalletPassword
+          - UseSSLCertificate
           - SSLCertificateARN
       - Label:
           default: Aurora PostreSQL configuration
@@ -56,6 +63,12 @@ Metadata:
           - DBMasterUsername
           - DBMasterUserPassword
           - DBPort
+      - Label:
+          default: AWS DevOps Guru
+        Parameters:
+          - EnableAmazonDevOpsGuru
+          - AdministratorAccountId
+          - EmailAddress
       - Label:
           default: AWS Quick Start configuration
         Parameters:
@@ -109,6 +122,8 @@ Metadata:
         default: Blockchain node Websocket Url
       NodeWalletPassword:
         default: Chainlink node Wallet Password
+      UseSSLCertificate:
+        default: SSL certificate with AWS Certificate Manager
       SSLCertificateARN:
         default: SSL certificate ARN
       DBName:
@@ -127,13 +142,18 @@ Metadata:
         default: Database master password
       DBPort:
         default: Database port
+      EnableAmazonDevOpsGuru:
+        default: Amazon DevOps Guru
+      AdministratorAccountId:
+        Default: AWS Administrator account ID
+      EmailAddress:
+        Default: Email Address to receive SNS notification
       QSS3BucketName:
         default: Quick Start S3 bucket name
       QSS3KeyPrefix:
         default: Quick Start S3 key prefix
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
-  cfn-lint: { config: { ignore_checks: [E9007] } }
 Parameters:
   PrivateSubnet1ID:
     Description: ID of the private Subnet in Availability Zone 1
@@ -301,9 +321,9 @@ Parameters:
     NoEcho: 'True'
     Type: String
   BlockchainNodeUrl:
-    Default: 'wss://ethUrl'
+    Default: 'wss://blockchainNodeEndpoint'
     Description: 'Please provide websocket endpoint for a Blockchain node'
-    MaxLength: '64'
+    MaxLength: '240'
     MinLength: '6'
     Type: String
   NodeWalletPassword:
@@ -312,10 +332,17 @@ Parameters:
     MinLength: '9'
     NoEcho: 'True'
     Type: String
+  UseSSLCertificate:
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Default: 'true'
+    Description: 'Use a public certificate created through AWS Certificate Manager (ACM).'
+    Type: String
   SSLCertificateARN:
-    Description: 'ARN for the certificate created through AWS Certificate Manager'
+    Description: 'ARN of the SSL Certificate created through AWS Certificate Manager.'
     AllowedPattern: '.+'
-    Default: 'arn:aws:acm:region:certificate'
+    Default: 'arn:aws:acm:region:account-id:certificate'
     Type: String
   DBName: 
     AllowedPattern: '[a-zA-Z0-9]*'
@@ -387,6 +414,23 @@ Parameters:
     ConstraintDescription: 'Must be in the range [1150-65535].'
     MinValue: 1150
     MaxValue: 65535
+  EnableAmazonDevOpsGuru:
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Default: 'true'
+    Description: 'Enable Amazon DevOps Guru'
+    Type: String
+  AdministratorAccountId:
+    Type: String
+    Description: 'AWS Account Id of the administrator account (the account in which StackSets will be created).'
+    MaxLength: 12
+    MinLength: 12
+    Default: '000000000000'
+  EmailAddress:
+    Description: 'Email address for Amazon DevOps Guru SNS subscription.'
+    Type: String
+    Default: chainlinkuser@email.com
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: The Quick Start bucket name can include numbers, lowercase
@@ -431,8 +475,7 @@ Resources:
     Properties:
       TemplateURL: 
         !Sub
-          # - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template'
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/quickstart-linux-bastion/templates/linux-bastion.template'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
@@ -448,9 +491,6 @@ Resources:
         NumBastionHosts: !Ref NumBastionHosts
         PublicSubnet1ID: !Ref PublicSubnet1ID
         PublicSubnet2ID: !Ref PublicSubnet2ID
-        # QSS3BucketRegion: !Ref QSS3BucketRegion
-        # QSS3BucketName: !Ref QSS3BucketName
-        # QSS3KeyPrefix: !Ref QSS3KeyPrefix
         RemoteAccessCIDR: !Ref RemoteAccessCIDR
         VPCID: !Ref VPCID
   AuroraStack:
@@ -458,8 +498,7 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-          # - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-amazon-aurora-postgresql/templates/aurora_postgres.template.yaml'
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/quickstart-amazon-aurora-postgresql/templates/aurora_postgres.template.yaml'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-amazon-aurora-postgresql/templates/aurora_postgres.template.yaml'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
@@ -481,8 +520,7 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-          # - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/quickstart-chainlink-node-template.yml'
-          - 'https://quickstart-chainlink-node-test-bucket.s3.us-east-1.amazonaws.com/quickstart-chainlink-node/templates/quickstart-chainlink-node-template.yml'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/quickstart-chainlink-node-template.yml'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
@@ -501,12 +539,16 @@ Resources:
         ChainlinkNodeGUIPassword: !Ref ChainlinkNodeGUIPassword
         BlockchainNodeUrl: !Ref BlockchainNodeUrl
         NodeWalletPassword: !Ref NodeWalletPassword
+        UseSSLCertificate: !Ref UseSSLCertificate
         SSLCertificateARN: !Ref SSLCertificateARN
         DBName: !Ref DBName
         DBMasterUsername: !Ref DBMasterUsername
         DBMasterUserPassword: !Ref DBMasterUserPassword
         DBPort: !Ref DBPort
         DBHostname: !GetAtt AuroraStack.Outputs.RDSEndPointAddress
+        EnableAmazonDevOpsGuru: !Ref EnableAmazonDevOpsGuru
+        AdministratorAccountId: !Ref AdministratorAccountId
+        EmailAddress: !Ref EmailAddress
         QSS3BucketRegion: !Ref QSS3BucketRegion
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix

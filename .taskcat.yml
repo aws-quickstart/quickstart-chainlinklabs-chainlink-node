@@ -1,15 +1,17 @@
 project:
-  name: quickstart-chainlink-node
+  name: quickstart-chainlinklabs-chainlink-node
   regions:
-  # only able to test in region with SSL certificates set up through AWS Certificate Manager with the SSL Certificate ARN
-  - us-east-1
+  - ap-southeast-1
 tests:
   default:
     template: ./templates/quickstart-chainlink-node-main.yml
     parameters:
       AvailabilityZones: $[taskcat_genaz_2]
-      KeyPairName: 'quickstart-staging'
-      ChainlinkNodeGUIPassword: 'TESTlink123!@_'
-      NodeWalletPassword: 'TESTlink123!@_'
-      DBMasterUserPassword: 'Docker_1234'
+      KeyPairName: override
+      ChainlinkNodeGUIPassword:  $[taskcat_genpass_8S]
+      NodeWalletPassword:  $[taskcat_genpass_10S]
+      DBMasterUserPassword:  $[taskcat_genpass_8S]
       SSLCertificateARN: ''
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      EnableAmazonDevOpsGuru: 'false'

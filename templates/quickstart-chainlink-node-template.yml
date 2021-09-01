@@ -1,7 +1,13 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Chainlink Node Quick Start - Infrastructure
+Description: Chainlink Node Quick Start - Infrastructure (qs-1s6adgs8e)
 Metadata:
-  LICENSE: MIT License (MIT)
+  cfn-lint:
+    config:
+      ignore_checks:
+        - E9101
+        - E9007
+      ignore_reasons:
+        E9101: Currently do to require parameters, on submodule. Will be updated when submodule is.
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -28,6 +34,7 @@ Metadata:
           - ChainlinkNodeGUIPassword
           - BlockchainNodeUrl
           - NodeWalletPassword
+          - UseSSLCertificate
           - SSLCertificateARN
       - Label:
           default: Aurora PostreSQL configuration
@@ -37,6 +44,12 @@ Metadata:
           - DBMasterUserPassword
           - DBPort
           - DBHostname
+      - Label:
+          default: AWS DevOps Guru
+        Parameters:
+          - EnableAmazonDevOpsGuru
+          - AdministratorAccountId
+          - EmailAddress
       - Label:
           default: AWS Quick Start configuration
         Parameters:
@@ -74,8 +87,10 @@ Metadata:
         default: Ethereum Node Websocket Url
       NodeWalletPassword:
         default: Chainlink Node Wallet Password
+      UseSSLCertificate:
+        default: SSL certificate with AWS Certificate Manager
       SSLCertificateARN:
-        default: ARN for the certificate created through AWS Certificate Manager
+        default: ARN of the certificate created through AWS Certificate Manager
       DBName:
         default: Database name
       DBMasterUsername:
@@ -86,13 +101,18 @@ Metadata:
         default: Database port
       DBHostname:
         Default: Database hostname
+      EnableAmazonDevOpsGuru:
+        default: Amazon DevOps Guru
+      AdministratorAccountId:
+        Default: AWS Administrator account ID
+      EmailAddress:
+        Default: Email Address to receive SNS notification
       QSS3BucketName:
         default: Quick Start S3 bucket name
       QSS3KeyPrefix:
         default: Quick Start S3 key prefix
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
-  cfn-lint: { config: { ignore_checks: [E9007] } }
 Parameters:
   PrivateSubnet1ID:
     Description: ID of the private Subnet in Availability Zone 1
@@ -185,8 +205,14 @@ Parameters:
     Description: 'Node Wallet password must container 3 capital letters, 3 lowercase letters, 3 numbers, and 3 special characters.'
     NoEcho: 'True'
     Type: String
+  UseSSLCertificate:
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Description: 'Using public certificate created through AWS Certificate Manager (ACM).'
+    Type: String
   SSLCertificateARN:
-    Description: 'ARN for the SSL Certificate'
+    Description: 'ARN of the SSL Certificate created through AWS Certificate Manager.'
     Type: String
   DBName: 
     Description: 'Name of the Amazon Aurora database.'
@@ -203,6 +229,20 @@ Parameters:
     Type: Number
   DBHostname:
     Description: 'The Amazon Aurora PostgreSQL database hostname.'
+    Type: String
+  EnableAmazonDevOpsGuru:
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Description: 'Enable Amazon DevOps Guru'
+    Type: String
+  AdministratorAccountId:
+    Type: String
+    Description: 'AWS Account Id of the administrator account (the account in which StackSets will be created).'
+    MaxLength: 12
+    MinLength: 12
+  EmailAddress:
+    Description: 'Email address for Amazon DevOps Guru SNS subscription.'
     Type: String
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
@@ -221,7 +261,7 @@ Parameters:
     AllowedPattern: ^([0-9a-zA-Z-.]+/)*$
     ConstraintDescription: The Quick Start S3 key prefix can include numbers, lowercase letters,
       uppercase letters, hyphens (-), and forward slashes (/).
-    Default: quickstart-chainlink-node/
+    Default: quickstart-chainlinklabs-chainlink-node/
     Description: S3 key prefix that is used to simulate a directory for your copy of the 
       Quick Start assets. Keep the default prefix unless you are customizing 
       the template. Changing this prefix updates code references to point to 
@@ -242,6 +282,12 @@ Conditions:
   UsingDefaultBucket: !Equals
     - !Ref QSS3BucketName
     - 'aws-quickstart'
+  UsingSSLCertificate: !Equals
+    - !Ref UseSSLCertificate
+    - 'true'
+  UsingAmazonDevOpsGuru: !Equals
+    - !Ref EnableAmazonDevOpsGuru
+    - 'true'
 Resources:
   ChainlinkNodeAutoScalingGroup:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
@@ -259,7 +305,7 @@ Resources:
           Value: !Sub 'ChainlinkNode-${AWS::Partition}'
           PropagateAtLaunch: true
       TargetGroupARNs:
-        - !Ref ChainlinkNodeTargetGroup
+        - !If [UsingSSLCertificate, !Ref ChainlinkNodeTargetGroup, !Ref AWS::NoValue]
     UpdatePolicy:
       AutoScalingReplacingUpdate:
         WillReplace: true
@@ -269,8 +315,7 @@ Resources:
       AWS::CloudFormation::Authentication:
         S3AccessCreds:
           type: S3
-          buckets: quickstart-chainlink-node-test-bucket
-          # buckets: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+          buckets: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
           roleName:
             Ref: ChainlinkNodeRole
       AWS::CloudFormation::Init:
@@ -288,7 +333,7 @@ Resources:
                 echo 'chainNetwork=${BlockchainNetwork}' >> /etc/environment
             02-store-blockchainrpc-var:
               command: !Sub 
-                echo 'ethUrl=${BlockchainNodeUrl}' >> /etc/environment
+                echo 'blockchainNodeUrl=${BlockchainNodeUrl}' >> /etc/environment
             03-store-dbuser-var:
               command: !Sub 
                 echo 'psqlUser=${DBMasterUsername}' >> /etc/environment
@@ -330,28 +375,28 @@ Resources:
               wget: []
           files:
             /home/ec2-user/.chainlink/create-env.sh:
-              source: https://quickstart-chainlink-node-test-bucket.s3.us-east-1.amazonaws.com/quickstart-chainlink-node/scripts/create-env.sh
-                # - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/create-env.sh
-                # - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-                #   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+              source: !Sub
+                 - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/create-env.sh
+                 - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+                   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000755'
               owner: ec2-user
               group: ec2-user
               authentication: S3AccessCreds
             /home/ec2-user/.chainlink/create-api.sh:
-              source: https://quickstart-chainlink-node-test-bucket.s3.us-east-1.amazonaws.com/quickstart-chainlink-node/scripts/create-api.sh
-                # - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/create-env.sh
-                # - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-                #   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+              source: !Sub
+                 - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/create-api.sh
+                 - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+                   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000755'
               owner: ec2-user
               group: ec2-user
               authentication: S3AccessCreds
             /home/ec2-user/.chainlink/create-password.sh:
-              source: https://quickstart-chainlink-node-test-bucket.s3.us-east-1.amazonaws.com/quickstart-chainlink-node/scripts/create-password.sh
-                # - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/create-env.sh
-                # - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-                #   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+              source: !Sub
+                 - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/create-password.sh
+                 - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+                   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000755'
               owner: ec2-user
               group: ec2-user
@@ -410,27 +455,27 @@ Resources:
             04-run-chainlink-docker:
               command: |
                 latestimage=$(curl -s -S "https://registry.hub.docker.com/v2/repositories/smartcontract/chainlink/tags/" | jq -r '."results"[]["name"]' | head -n 1)
-                cd /home/ec2-user/.chainlink && docker run -d \
+                docker run -d \
                 --log-driver=awslogs \
                 --log-opt awslogs-group=ChainlinkLogs \
                 --restart unless-stopped \
                 --name chainlink \
                 -p 6688:6688 \
                 -v /home/ec2-user/.chainlink:/chainlink \
-                --env-file=/home/ec2-user/.chainlink/.env  smartcontract/chainlink:$latestimage local n \
+                --env-file=/home/ec2-user/.chainlink/.env  smartcontract/chainlink:${latestimage} local n \
                 -p /chainlink/.password \
                 -a /chainlink/.api
-              ignoreErrors: true
+              cwd: "/home/ec2-user/.chainlink"
         init-cleanup:
           commands:
-            01-remove-env:
+            01-init-cooldown:
+              command: sleep 60
+            02-remove-env:
               command: rm -rf /home/ec2-user/.chainlink/.env
-            02-remove-api:
+            03-remove-api:
               command: rm -rf /home/ec2-user/.chainlink/.api
-            03-remove-password:
+            04-remove-password:
               command: rm -rf /home/ec2-user/.chainlink/.password
-            04-set-dir-permission:
-              command: chown ec2-user:ec2-user .chainlink
     Properties:
       AssociatePublicIpAddress: false
       KeyName: !Ref KeyPairName
@@ -511,8 +556,7 @@ Resources:
                Effect: Allow
                Action:
                  - 's3:GetObject'
-              #  Resource: !Sub arn:aws:s3:::${QSS3BucketName}/*
-               Resource: arn:aws:s3:::quickstart-chainlink-node-test-bucket/*
+               Resource: !Sub 'arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*'
   ChainlinkNodeRole:
     Type: AWS::IAM::Role
     Properties:
@@ -533,13 +577,14 @@ Resources:
           PolicyDocument:
             Version: 2012-10-17
             Statement:
-              - Resource: '*'
-                Effect: Allow 
+              - Effect: Allow 
                 Action:
                   - 'logs:CreateLogStream'
                   - 'logs:CreateLogGroup'
                   - 'logs:PutLogEvents'
                   - 'logs:DescribeLogStreams'
+                Resource:
+                  - !Sub arn:${AWS::Partition}:logs:*:*:*
               - Effect: Allow
                 Action:
                   - 'cloudwatch:PutMetricData'
@@ -547,10 +592,13 @@ Resources:
                   - 'cloudwatch:ListMetrics'
                 Resource:
                   - '*'
+              # Can we make an exception for the cloudwatch resource wildcard -
+              # https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazoncloudwatch.html
               - Effect: Allow
                 Action:
                   - 'ec2:DescribeInstances'
-                Resource: '*'
+                Resource:
+                  - !Sub arn:${AWS::Partition}:ec2:*:*:*
         - PolicyName: SecretsPolicy
           PolicyDocument:
             Version: 2012-10-17
@@ -562,8 +610,10 @@ Resources:
                   - !Ref DBSecret
                   - !Ref ApiSecret
                   - !Ref WalletSecret
+
   ELBSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
+    Condition: UsingSSLCertificate
     Properties:
       GroupDescription: 'Security Group to allow inbound https traffic and http to https redirected traffic'
       VpcId: !Ref VPCID
@@ -578,6 +628,7 @@ Resources:
           CidrIp: !Ref RemoteAccessCIDR
   ChainlinkNodeELB:
     Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    Condition: UsingSSLCertificate
     Properties:
       Name: CLNodeELB
       SecurityGroups: 
@@ -587,6 +638,7 @@ Resources:
         - !Ref PublicSubnet2ID
   ChainlinkNodeTargetGroup:
     Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Condition: UsingSSLCertificate
     Properties:
       HealthCheckEnabled: true
       HealthCheckIntervalSeconds: 15
@@ -600,6 +652,7 @@ Resources:
       VpcId: !Ref VPCID
   HTTPListener:
     Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Condition: UsingSSLCertificate
     Properties:
       DefaultActions:
         - Type: 'redirect'
@@ -615,6 +668,7 @@ Resources:
       Protocol: 'HTTP'
   HTTPSListener:
     Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Condition: UsingSSLCertificate
     Properties:
       LoadBalancerArn: !Ref ChainlinkNodeELB
       Certificates: 
@@ -625,6 +679,7 @@ Resources:
       Port: 443
       Protocol: 'HTTPS'
       SslPolicy: 'ELBSecurityPolicy-2016-08'
+
   ChainlinkLogGroup:
     Type: 'AWS::Logs::LogGroup'
     Properties:
@@ -653,3 +708,101 @@ Resources:
       Name: WalletSecret
       Description: Secret password for Chainlink node wallet password
       SecretString: !Sub ${NodeWalletPassword}
+
+  AdministrationRole:
+    Type: AWS::IAM::Role
+    Condition: UsingAmazonDevOpsGuru
+    Properties:
+      RoleName: AWSCloudFormationStackSetAdministrationRole
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudformation.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: AssumeRole-AWSCloudFormationStackSetExecutionRole
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sts:AssumeRole
+                Resource:
+                  - "arn:*:iam::*:role/AWSCloudFormationStackSetExecutionRole"
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Condition: UsingAmazonDevOpsGuru
+    Properties:
+      RoleName: AWSCloudFormationStackSetExecutionRole
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - !Ref AdministratorAccountId
+            Action:
+              - sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/AdministratorAccess
+  DevOpsGuruTopic:
+    Type: AWS::SNS::Topic
+    Condition: UsingAmazonDevOpsGuru
+    Properties:
+      DisplayName: SNS Topic for DevOps Guru
+      TopicName: devops-guru
+      KmsMasterKeyId: !Ref DevOpsGuruCMK
+      Subscription:
+        - Endpoint: !Ref EmailAddress
+          Protocol: email
+  DevOpsGuruCMK:
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - EIAMPolicyActionWildcard
+          ignore_reasons:
+            EIAMPolicyActionWildcard: Reduces the risk of the CMK becoming unmanageable so granting the root account full access to CMK https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default-allow-root-enable-iam
+    Type: AWS::KMS::Key
+    Condition: UsingAmazonDevOpsGuru
+    Properties:
+      Enabled: True
+      EnableKeyRotation: True
+      KeyPolicy:
+        Id: DevOpsGuruCMK
+        Version: 2012-10-17
+        Statement:
+        - Sid: Allow DevOps Guru Service Principal
+          Effect: Allow
+          Principal:
+            Service: devops-guru.amazonaws.com
+          Action:
+            - kms:GenerateDataKeyPairWithoutPlaintext
+            - kms:GenerateDataKeyPair
+            - kms:GenerateDataKey
+            - kms:GenerateDataKeyWithoutPlaintext
+            - kms:Decrypt
+          # Resource: '*'
+          Resource:
+            - !Sub arn:${AWS::Partition}:kms:*:*:*
+        - Sid: Allow Administration
+          Effect: Allow
+          Principal:
+            AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+          Action: 
+            - 'kms:*'
+          Resource: 
+            - '*'
+  DevOpsGuruMonitoring:
+    Type: AWS::DevOpsGuru::ResourceCollection
+    Condition: UsingAmazonDevOpsGuru
+    Properties:
+      ResourceCollectionFilter:
+        CloudFormation:
+          StackNames: 
+            - "*"
