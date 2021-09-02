@@ -708,7 +708,7 @@ Resources:
     Type: AWS::IAM::Role
     Condition: UsingAmazonDevOpsGuru
     Properties:
-      RoleName: AWSCloudFormationStackSetAdministrationRole
+      #RoleName: !Sub AWSCloudFormationStackSetAdministrationRole
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -732,7 +732,7 @@ Resources:
     Type: AWS::IAM::Role
     Condition: UsingAmazonDevOpsGuru
     Properties:
-      RoleName: AWSCloudFormationStackSetExecutionRole
+      #RoleName: AWSCloudFormationStackSetExecutionRole
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
