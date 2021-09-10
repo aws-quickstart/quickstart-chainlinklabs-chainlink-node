@@ -556,7 +556,7 @@ Resources:
                Effect: Allow
                Action:
                  - 's3:GetObject'
-               Resource: !Sub 'arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*'
+               Resource: !Sub 'arn:${AWS::Partition}:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*'
   ChainlinkNodeRole:
     Type: AWS::IAM::Role
     Properties:
