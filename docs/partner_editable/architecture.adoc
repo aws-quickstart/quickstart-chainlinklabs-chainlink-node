@@ -8,7 +8,7 @@ AWS Cloud.
 
 [#architecture1]
 .Quick Start architecture for {partner-product-short-name} on AWS
-image::../images/architecture_diagram_white.png[Architecture]
+image::../images/chainlink-node-architecture-diagram.png[Architecture]
 
 As shown in <<architecture1>>, the Quick Start sets up the following:
 
@@ -18,18 +18,17 @@ best practices, to provide you with your own virtual network on AWS.*
 * In the public subnets:
 ** An internet gateway to allow access to the internet.*
 ** Managed network address translation (NAT) gateways to allow outbound
-internet access for the Chainlink node instances in the private subnets.*
+internet access for the {partner-product-short-name} instances in the private subnets.*
 ** A Linux bastion host in an Auto Scaling group to allow inbound Secure
-Shell (SSH) access to EC2 instances in public and private subnets.
+Shell (SSH) access to Amazon Elastic Compute Cloud (Amazon EC2) instances in public and private subnets.
 * In the private subnets:
-** Two Chainlink nodes in an Auto Scaling group.
-** An Amazon Relation Database Service (Amazon RDS) PostgreSQL managed database instance.
+** Two Chainlink nodes in an Auto Scaling group that contains security groups for fine-grained inbound access control.
+** An Amazon Relational Database Service (Amazon RDS) PostgreSQL managed database instance.
 // Add bullet points for any additional components that are included in the deployment. Make sure that the additional components are also represented in the architecture diagram. End each bullet with a period.
-* Security groups for fine-grained inbound access control.
-* An Elastic Load Balancing (ELB) load balancer to access the Chainlink node web graphical user interface.
+* An Elastic Load Balancing (ELB) load balancer to access the {partner-product-short-name} web graphical user interface.
 * Amazon CloudWatch logging of Chainlink nodes.
-* AWS managed keys and customer managed keys for resources with AWS Key Management Service (KMS).
-* AWS Secrets Manager to store your credentials.
+* AWS Key Management Service (AWS KMS) resources with both AWS managed and customer managed keys.
+* AWS Secrets Manager to store credentials.
 * Amazon DevOps Guru tracking of your {partner-product-short-name} stack.
 
 [.small]#* The template that deploys the Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.#

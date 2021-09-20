@@ -1,11 +1,11 @@
 == Post-deployment steps
 
-=== Access your Chainlink node
-You can access your Chainlink node through the web graphical user interface. There are two options on accessing the page.
+=== Access your {partner-product-short-name}
+You can access the {partner-product-short-name} user interface (UI) using one of the following options: 
 
-1. If using a domain and SSL certificate created through AWS Certificate Manager, you can access the Chainlink node web GUI through the application load balancer endpoint or through your domain by adding the load balancer endpoint to your domain's DNS record.
+Option 1: If using a domain and SSL certificate created through ACM, you can access the {partner-product-short-name} UI through the Application Load Balancer endpoint or through your domain by adding the load balancer endpoint to your domain's DNS record.
 
-2. By enabling TCP port forwarding on your bastion host, you are able to port forward the Chainlink node web GUI to your machine. As we are accessing the Chainlink node through a bastion, it is recommended to use SSH agent forwarding. Then connect to your bastion with SSH agent and TCP port forwarding. You can access the Chainlink node web GUI at http://localhost:6688/. 
+Option 2: Enable TCP port forwarding on your bastion host to port forward the {partner-product-short-name} UI to your machine. When accessing the {partner-product-short-name} through a bastion host, use SSH agent forwarding. Then connect to your bastion host with an SSH agent and TCP port forwarding. Access the {partner-product-short-name} UI at http://localhost:6688/. 
 
 ....
 ssh-add <your_ssh_key>
@@ -13,16 +13,16 @@ ssh ec2-user@<bastion_host_public_ip> -A -L 6688:localhost:6688
 ssh ec2-user@<chainlink_node_internal_ip> -L 6688:localhost:6688
 ....
 
-=== Fulfilling requests with the Chainlink node
-Once the quickstart is deployed, your Chainlink node is ready to interact with smart contracts and https://docs.chain.link/docs/fulfilling-requests/[fulfill requests].
+=== Fulfill requests with the {partner-product-short-name}
+After the Quick Start is deployed, your {partner-product-short-name} is ready to interact with smart contracts and fulfill requests. For more information, see https://docs.chain.link/docs/fulfilling-requests/[Fulfilling Requests^].
 
-=== Working with external adapters
-External adapters are how Chainlink enables easy integration of custom computations and specialized APIs. External adapters are services which the core of the Chainlink node communicates via its API with a simple JSON specification. To get started, visit our https://docs.chain.link/docs/external-adapters/[external adapters documentation].
+=== Work with external adapters
+Chainlink enables integration of custom computations and specialized APIs using external adaptars. The {partner-product-short-name} communicates with external adapter services via an API using a simple JSON specification  To get started, see https://docs.chain.link/docs/external-adapters/[External Adapters Introduction^].
 
-=== Manually creating your .env, .password, and .api files for Chainlink node instances
-If the Chainlink node instances are stopped, then new .env, .password, and .api files will need to be created to start the Chainlink node.
+=== Manually create your .env, .password, and .api files for {partner-product-short-name} instances
+If the {partner-product-short-name} instances are stopped, then you must create new .env, .password, and .api files to start the {partner-product-short-name}.
 
-*Generating the .env file:*
+*Generate the .env file:*
 ....
 cd /home/ec2-user/.chainlink/ && ./create-env.sh \
 ${chainNetwork} \
@@ -34,21 +34,21 @@ ${psqlPort} \
 ${psqlDb}
 ....
 
-*Generating the .password file:*
+*Generate the .password file:*
 ....
 cd /home/ec2-user/.chainlink/ && ./create-password.sh \
 $(aws secretsmanager get-secret-value --secret-id WalletSecret --query "SecretString" --output text)
 ....
 
-*Generating the .api file:*
+*Generate the .api file:*
 ....
 cd /home/ec2-user/.chainlink/ && ./create-api.sh \
 ${apiUser} \
 $(aws secretsmanager get-secret-value --secret-id ApiSecret --query "SecretString" --output text)
 ....
 
-=== Docker run command to start Chainlink node instances
-To manually run the latest image of Chainlink node docker instance:
+=== Docker run command to start {partner-product-short-name} instances
+To manually run the latest image of the {partner-product-short-name} Docker instance:
 
 ....
 latestimage=$(curl -s -S "https://registry.hub.docker.com/v2/repositories/smartcontract/chainlink/tags/" | jq -r '."results"[]["name"]' | head -n 1)
@@ -66,32 +66,30 @@ cd /home/ec2-user/.chainlink && docker run -d \
 
 == Best practices for using {partner-product-short-name} on AWS
 
-=== Failover Capabilities
-To ensure there is very minimal downtime, failover capabilities are required on both the Chainlink and Ethereum clients so that if any one server fails, the service is still online. The Amazon EC2 Auto Scaling group has two Chainlink nodes: one active Chainlink node and one standby Chainlink node. Data from both the Chainlink and Ethereum clients are stored in a PostgreSQL database which needs to be highly available.
+=== Failover capabilities
+To reduce downtime, failover capabilities are required on both the Chainlink and Ethereum clients so that if one server fails, the service is still online. The Amazon EC2 Auto Scaling group has two Chainlink nodes: one active {partner-product-short-name} and one standby {partner-product-short-name}. Data from both the Chainlink and Ethereum clients are stored in a highly available PostgreSQL database.
 
-=== Disaster Recovery
-Problems occur and when they do, the right processes need to be in-place to ensure that as little downtime as possible occurs. The main impediment to incurring large amounts of downtime in the context of Chainlink node operators is a fully corrupted Ethereum node that requires a re-sync.
+=== Disaster recovery
+If problems occur, the right processes must be in place to reduce downtime. The most common reason for downtime (in the context of {partner-product-short-name} operators) is a corrupted Ethereum node that requires a resynchronization.
 
-Due to the challenge of recovering an Ethereum client, we recommend:
+To recover an Ethereum client and reduce downtime, follow these recommendations:
 
-- Daily snapshots of the Ethereum chain on a separate server than what the Chainlink node is connected to.
-- An Ethereum client start-up process that pulls down the latest template of the chain and syncs it to the latest height.
+* Take daily snapshots of the Ethereum chain on a separate server than the one connected to the {partner-product-short-name}.
+* Use an Ethereum client start-up process that pulls down the latest template of the chain and syncs it to the latest height.
 
-With this process in-place, the elapsed time of full disaster is kept to a minimum.
+=== Active monitoring
 
-=== Active Monitoring
+To detect issues before or when they occur, use active monitoring in the following areas: 
 
-To be proactive in detecting any issues before or when they occur, active monitoring needs to be in place. The areas where we recommend to monitor are:
+* (Minimum required) Ethereum of the wallet address assigned to the node.
+* Errored job runs.
+* Operator UI port to be open and responsive (usually 6688).
+* Ethereum HTTP and websocket ports to be open and responsive (usually 8545 and 8546).
+* Ethereum client disk, RAM, and CPU usage.
 
-- (Minimum Required) ETH balance of the wallet address assigned to the node.
-- Errored job runs.
-- Operator UI port to be open and responsive. (Usually: 6688)
-- Ethereum http and websocket ports to be open and responsive. (Usually: 8545 & 8546)
-- Ethereum client disk, RAM and CPU usage.
-
-Monitoring of the Chainlink nodes are available through Amazon CloudWatch.
+You can use Amazon CloudWatch to monitor Chainlink nodes.
 
 == Security
 
-The Chainlink node docker instance requires the .env, .password, and .api file that contains plaintext passwords. It is recommended to remove the .env, .password, and .api files once the Chainlink node instance is running to prevent potential exposure of sensitive passwords.
+The {partner-product-short-name} Docker instance requires the .env, .password, and .api file that contains plaintext passwords. Remove the .env, .password, and .api files after the {partner-product-short-name} instance is running to prevent potential exposure of sensitive passwords.
 
