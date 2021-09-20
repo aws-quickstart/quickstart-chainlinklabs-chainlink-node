@@ -8,7 +8,7 @@ To submit code for this Quick Start, see the [AWS Quick Start Contributor's Kit]
 
 ## Start a Chainlink Node
 
-Deploying this Quick Start will create highly available Chainlink nodes using with default parameters and a provided blockchain.
+Deploying this Quick Start will create highly available Chainlink nodes with default parameters and a provided blockchain.
 
 ## Prerequisite
 

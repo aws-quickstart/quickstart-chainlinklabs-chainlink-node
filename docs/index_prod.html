@@ -860,6 +860,7 @@ p.footer-text a{color:#d7d8d8}
 </li>
 <li><a href="#_security">Security</a></li>
 <li><a href="#_faq">FAQ</a></li>
+<li><a href="#_troubleshooting">Troubleshooting</a></li>
 <li><a href="#_customer_responsibility">Customer responsibility</a></li>
 <li><a href="#_parameter_reference">Parameter reference</a></li>
 <li><a href="#_send_us_feedback">Send us feedback</a></li>
@@ -880,8 +881,10 @@ p.footer-text a{color:#d7d8d8}
 </div>
 </div>
 <div class="paragraph text-center">
-<p><strong>August 2021</strong><br>
-<em>AWS Quick Start team</em></p>
+<p><strong>September 2021</strong><br>
+<em>David Dang, Chainlink Labs</em><br>
+<em>Vijay Krishnan, AWS PSA</em><br>
+<em>Troy Ameigh PSA, Intergration and Automation Team</em></p>
 </div>
 <div class="admonitionblock tip text-left">
 <table>
@@ -1169,40 +1172,12 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_supported_regions">Supported Regions</h4>
+<h4 id="_supported_aws_regions">Supported AWS Regions</h4>
 <div class="paragraph">
-<p>This Quick Start supports the following Regions:</p>
+<p>For any Quick Start to work in a Region other than its default Region, all the services it deploys must be supported in that Region. You can launch a Quick Start in any Region and see if it works. If you get an error such as “Unrecognized resource type,” the Quick Start is not supported in that Region.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>us-east-1, US East (N. Virginia)</p>
-</li>
-<li>
-<p>us-east-2, US East (Ohio)</p>
-</li>
-<li>
-<p>us-west-2, US West (Oregon)</p>
-</li>
-<li>
-<p>eu-central-1, Europe (Frankfurt)</p>
-</li>
-<li>
-<p>eu-west-1, Europe (Ireland)</p>
-</li>
-<li>
-<p>eu-north-1, Europe (Stockholm)</p>
-</li>
-<li>
-<p>ap-southeast-1, Asia Pacific (Singapore)</p>
-</li>
-<li>
-<p>ap-southeast-2, Asia Pacific (Tokyo)</p>
-</li>
-<li>
-<p>ap-northeast-1, Asia Pacific (Tokyo)</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>For an up-to-date list of AWS Regions and the AWS services they support, see <a href="https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/" target="_blank" rel="noopener">AWS Regional Services</a>.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -1221,6 +1196,25 @@ Certain Regions are available on an opt-in basis. For more information, see <a h
 <h4 id="_iam_permissions">IAM permissions</h4>
 <div class="paragraph">
 <p>Before launching the Quick Start, you must sign in to the AWS Management Console with IAM permissions for the resources that the templates deploy. The <em>AdministratorAccess</em> managed policy within IAM provides sufficient permissions, although your organization may choose to use a custom policy with more restrictions. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_job-functions.html" target="_blank" rel="noopener">AWS managed policies for job functions</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_deployment_options">Deployment options</h4>
+<div class="paragraph">
+<p>This Quick Start provides two deployment options:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Deploy Chainlink node into a new VPC</strong>. This option builds a new AWS environment consisting of the VPC, subnets, NAT gateways, security groups, bastion hosts, and other infrastructure components. It then deploys Chainlink node into this new VPC.</p>
+</li>
+<li>
+<p><strong>Deploy Chainlink node into an existing VPC</strong>. This option provisions Chainlink node in your existing AWS infrastructure.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The Quick Start provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and Chainlink node settings, as discussed later in this guide.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1244,25 +1238,6 @@ following the on-screen instructions.</p>
 <p>If using an existing VPC, make sure that it contains two public subnets, two private subnets, internet gateway, NAT gateways, and route tables.</p>
 </li>
 </ol>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_deployment_options">Deployment options</h4>
-<div class="paragraph">
-<p>This Quick Start provides two deployment options:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Deploy Chainlink node into a new VPC</strong>. This option builds a new AWS environment consisting of the VPC, subnets, NAT gateways, security groups, bastion hosts, and other infrastructure components. It then deploys Chainlink node into this new VPC.</p>
-</li>
-<li>
-<p><strong>Deploy Chainlink node into an existing VPC</strong>. This option provisions Chainlink node in your existing AWS infrastructure.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The Quick Start provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and Chainlink node settings, as discussed later in this guide.</p>
 </div>
 </div>
 </div>
@@ -1335,7 +1310,7 @@ If you’re deploying Chainlink node into an existing VPC, make sure that your V
 <p>On the <strong>Specify stack details</strong> page, change the stack name if needed. Review the parameters for the template. Provide values for the parameters that require input. For all other parameters, review the default settings and customize them as necessary. For details on each parameter, see the <a href="#_parameter_reference">Parameter reference</a> section of this guide. When you finish reviewing and customizing the parameters, choose <strong>Next</strong>.</p>
 </li>
 <li>
-<p>On the <strong>Configure stack options</strong> page, you can <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html" target="_blank" rel="noopener">specify tags</a> (key-value pairs) for resources in your stack and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-add-tags.html" target="_blank" rel="noopener">set advanced options</a>. When you’re finished, choose <strong>Next</strong>.</p>
+<p>On the <strong>Configure stack options</strong> page, you can <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html" target="_blank" rel="noopener">specify tags</a> (key-value pairs) for resources in your stack and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-add-tags.html" target="_blank" rel="noopener">set advanced options</a>. When you finish, choose <strong>Next</strong>.</p>
 </li>
 <li>
 <p>On the <strong>Review</strong> page, review and confirm the template settings. Under <strong>Capabilities</strong>, select the two check boxes to acknowledge that the template creates IAM resources and might require the ability to automatically expand macros.</p>
@@ -1593,6 +1568,21 @@ ${psqlDb}</pre>
 </div>
 </div>
 <div class="sect1">
+<h2 id="_troubleshooting">Troubleshooting</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Where can I find more information for the Chainlink node deployment?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You can find more information at <a href="https://docs.chain.link/docs/best-practices-aws/">Best Practices for Deploying Nodes on AWS</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_customer_responsibility">Customer responsibility</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -1629,7 +1619,7 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 <h2 id="_quick_start_reference_deployments">Quick Start reference deployments</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>See the <a href="https://aws.amazon.com/quickstart/">AWS Quick Start home page</a>.</p>
+<p>See the <a href="https://aws.amazon.com/quickstart/" target="_blank" rel="noopener">AWS Quick Start home page</a>.</p>
 </div>
 </div>
 </div>

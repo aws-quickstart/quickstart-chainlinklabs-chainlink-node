@@ -42,3 +42,9 @@ ${psqlHostname} \
 ${psqlPort} \
 ${psqlDb}
 ....
+
+== Troubleshooting
+
+Where can I find more information for the Chainlink node deployment?
+
+* You can find more information at https://docs.chain.link/docs/best-practices-aws/[Best Practices for Deploying Nodes on AWS].
