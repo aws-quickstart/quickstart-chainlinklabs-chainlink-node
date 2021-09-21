@@ -25,7 +25,7 @@ Shell (SSH) access to Amazon Elastic Compute Cloud (Amazon EC2) instances in pub
 ** Two Chainlink nodes in an Auto Scaling group that contains security groups for fine-grained inbound access control.
 ** An Amazon Relational Database Service (Amazon RDS) PostgreSQL managed database instance.
 // Add bullet points for any additional components that are included in the deployment. Make sure that the additional components are also represented in the architecture diagram. End each bullet with a period.
-* An Elastic Load Balancing (ELB) load balancer to access the {partner-product-short-name} web graphical user interface.
+* An Elastic Load Balancing (ELB) load balancer to access the {partner-product-short-name} user interface.
 * Amazon CloudWatch logging of Chainlink nodes.
 * AWS Key Management Service (AWS KMS) resources with both AWS managed and customer managed keys.
 * AWS Secrets Manager to store credentials.
