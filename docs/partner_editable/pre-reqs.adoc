@@ -6,7 +6,7 @@
 following the on-screen instructions.
 2. Create a key pair in your preferred Region.
 3. If using a domain and SSL certificate, create a public certificate using AWS Certificate Manager (ACM) in your preferred Region.
-4. Run a blockchain client or use a third-party client. If using a third-party Ethereum client, you can use the websocket endpoint from https://infura.io/docs/ethereum/wss/introduction.md[Infura^] or https://docs.fiews.io/docs/getting-started[Fiews^]. For other Ethereum clients, see https://docs.chain.link/docs/run-an-ethereum-client/[Run an Ethereum Client^].
+4. Run a blockchain client or use a third-party client. If using a third-party Ethereum client, you can use the web socket endpoint from https://infura.io/docs/ethereum/wss/introduction.md[Infura^] or https://docs.fiews.io/docs/getting-started[Fiews^]. For other Ethereum clients, see https://docs.chain.link/docs/run-an-ethereum-client/[Run an Ethereum Client^].
 5. If using an existing VPC, make sure that it contains two public subnets, two private subnets, an internet gateway, NAT gateways, and route tables.
 
 //==== Prepare your {partner-company-name} account

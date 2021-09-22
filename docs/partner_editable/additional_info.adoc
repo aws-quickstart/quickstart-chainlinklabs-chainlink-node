@@ -5,7 +5,7 @@ You can access the {partner-product-short-name} user interface (UI) using one of
 
 Option 1: If using a domain and SSL certificate created through ACM, you can access the {partner-product-short-name} UI through the Application Load Balancer endpoint or through your domain by adding the load balancer endpoint to your domain's DNS record.
 
-Option 2: Enable TCP port forwarding on your bastion host to port forward the {partner-product-short-name} UI to your machine. When accessing the {partner-product-short-name} through a bastion host, use SSH agent forwarding. Then connect to your bastion host with an SSH agent and TCP port forwarding. Access the {partner-product-short-name} UI at http://localhost:6688/. 
+Option 2: Allow TCP port forwarding on your bastion host to port forward the {partner-product-short-name} UI to your machine. When accessing the {partner-product-short-name} through a bastion host, use SSH agent forwarding. Then connect to your bastion host with an SSH agent and TCP port forwarding. Access the {partner-product-short-name} UI at http://localhost:6688/. 
 
 ....
 ssh-add <your_ssh_key>
@@ -17,9 +17,9 @@ ssh ec2-user@<chainlink_node_internal_ip> -L 6688:localhost:6688
 After the Quick Start is deployed, your {partner-product-short-name} is ready to interact with smart contracts and fulfill requests. For more information, see https://docs.chain.link/docs/fulfilling-requests/[Fulfilling Requests^].
 
 === Work with external adapters
-Chainlink enables integration of custom computations and specialized APIs using external adaptars. The {partner-product-short-name} communicates with external adapter services via an API using a simple JSON specification  To get started, see https://docs.chain.link/docs/external-adapters/[External Adapters Introduction^].
+Chainlink enables integration of custom computations and specialized APIs using external adapters. The {partner-product-short-name} communicates with external adapter services via an API using a JSON specification. To get started, see https://docs.chain.link/docs/external-adapters/[External Adapters Introduction^].
 
-=== Manually create your .env, .password, and .api files for {partner-product-short-name} instances
+=== Manually create files for {partner-product-short-name} instances
 If the {partner-product-short-name} instances are stopped, then you must create new .env, .password, and .api files to start the {partner-product-short-name}.
 
 *Generate the .env file:*
@@ -47,8 +47,8 @@ ${apiUser} \
 $(aws secretsmanager get-secret-value --secret-id ApiSecret --query "SecretString" --output text)
 ....
 
-=== Docker run command to start {partner-product-short-name} instances
-To manually run the latest image of the {partner-product-short-name} Docker instance:
+=== Start {partner-product-short-name} instances
+To run the latest image of the {partner-product-short-name} Docker instance, run this command:
 
 ....
 latestimage=$(curl -s -S "https://registry.hub.docker.com/v2/repositories/smartcontract/chainlink/tags/" | jq -r '."results"[]["name"]' | head -n 1)
@@ -84,7 +84,7 @@ To detect issues before or when they occur, use active monitoring in the followi
 * (Minimum required) Ethereum of the wallet address assigned to the node.
 * Errored job runs.
 * Operator UI port to be open and responsive (usually 6688).
-* Ethereum HTTP and websocket ports to be open and responsive (usually 8545 and 8546).
+* Ethereum HTTP and web socket ports to be open and responsive (usually 8545 and 8546).
 * Ethereum client disk, RAM, and CPU usage.
 
 You can use Amazon CloudWatch to monitor Chainlink nodes.
