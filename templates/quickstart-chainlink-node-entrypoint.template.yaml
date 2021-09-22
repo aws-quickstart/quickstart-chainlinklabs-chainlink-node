@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Chainlink node Quick Start - Main (qs-1s6adgs60)
 Metadata:
   QuickStartDocumentation:
-    EntrypointName: 'Launch into a new VPC'
+    EntrypointName: 'Parameters for launching into a new VPC'
     Order: '1'
   cfn-lint:
     config:
@@ -94,7 +94,7 @@ Metadata:
       VPCTenancy:
         default: VPC tenancy
       KeyPairName:
-        default: SSH Key pair name
+        default: SSH key pair name
       BastionAMIOS:
         default: Bastion AMI operating system
       ChainlinkNodeInstanceType:
@@ -116,15 +116,15 @@ Metadata:
       EnableX11Forwarding:
         default: X11 forwarding
       BlockchainNetwork:
-        default: Blockchain Network
+        default: Blockchain network
       ChainlinkNodeGUIEmail:
-        default: Chainlink node GUI Email
+        default: Chainlink node GUI email
       ChainlinkNodeGUIPassword:
-        default: Chainlink node GUI Password
+        default: Chainlink node GUI password
       BlockchainNodeUrl:
-        default: Blockchain node Websocket Url
+        default: Blockchain node websocket URL
       NodeWalletPassword:
-        default: Chainlink node Wallet Password
+        default: Chainlink node wallet password
       UseSSLCertificate:
         default: SSL certificate with AWS Certificate Manager
       SSLCertificateARN:
@@ -142,7 +142,7 @@ Metadata:
       DBInstanceClass:
         default: Database instance class
       DBMasterUsername:
-        default: Database master username
+        default: Database master user name
       DBMasterUserPassword:
         default: Database master password
       DBPort:
@@ -150,9 +150,9 @@ Metadata:
       EnableAmazonDevOpsGuru:
         default: Amazon DevOps Guru
       AdministratorAccountId:
-        Default: AWS Administrator account ID
+        Default: AWS administrator account ID
       EmailAddress:
-        Default: Email Address to receive SNS notification
+        Default: Email address to receive SNS notifications
       QSS3BucketName:
         default: Quick Start S3 bucket name
       QSS3KeyPrefix:
@@ -165,21 +165,21 @@ Parameters:
     Type: List<AWS::EC2::AvailabilityZone::Name>
   VPCCIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28.
     Default: 10.0.0.0/16
-    Description: CIDR Block for the VPC.
+    Description: CIDR block for the VPC.
     Type: String
   PublicSubnet1CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28.
     Default: 10.0.128.0/20
-    Description: CIDR Block for the public DMZ subnet 1, located in Availability Zone 1.
+    Description: CIDR block for the public DMZ subnet 1, located in Availability Zone 1.
     Type: String
   PublicSubnet2CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28.
     Default: 10.0.144.0/20
-    Description: CIDR Block for the public DMZ subnet 2, located in Availability Zone 2.
+    Description: CIDR block for the public DMZ subnet 2, located in Availability Zone 2.
     Type: String
   PrivateSubnet1CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
@@ -196,7 +196,7 @@ Parameters:
   RemoteAccessCIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x
-    Description: Allowed CIDR block for external SSH access to the bastions and Chainlink node UI
+    Description: Allowed CIDR block for external SSH access to the bastions and Chainlink node UI.
     Default: 0.0.0.0/0
     Type: String
   VPCTenancy:
@@ -208,7 +208,7 @@ Parameters:
     Type: String
   KeyPairName:
     Description: Name of an existing public/private key pair. If you do not have one in this AWS Region,
-      please create it before continuing.
+      create it before continuing.
     Type: 'AWS::EC2::KeyPair::KeyName'
   BastionAMIOS:
     AllowedValues:
@@ -330,28 +330,28 @@ Parameters:
       - BSC-Mainnet
       - Matic-Mainnet
     Default: Kovan-ETH-Testnet
-    Description: 'Blockchain Network to run Chainlink node.'
+    Description: 'Blockchain network to run Chainlink node.'
     Type: String
   ChainlinkNodeGUIEmail:
     Default: chainlinkuser@email.com
-    Description: 'The Chainlink node GUI Email.'
+    Description: 'The Chainlink node GUI email.'
     MaxLength: '64'
     MinLength: '1'
     Type: String
   ChainlinkNodeGUIPassword:
-    Description: 'The Chainlink node GUI Password.'
+    Description: 'The Chainlink node GUI password.'
     MaxLength: '64'
     MinLength: '8'
     NoEcho: 'True'
     Type: String
   BlockchainNodeUrl:
     Default: 'wss://blockchainNodeEndpoint'
-    Description: 'Please provide websocket endpoint for a Blockchain node'
+    Description: 'The websocket endpoint for a blockchain node.'
     MaxLength: '240'
     MinLength: '6'
     Type: String
   NodeWalletPassword:
-    Description: 'Node Wallet password must container 3 capital letters, 3 lowercase letters, 3 numbers, and 3 special characters.'
+    Description: 'Node wallet password must contain 3 uppercase letters, 3 lowercase letters, 3 numbers, and 3 special characters.'
     MaxLength: '32'
     MinLength: '9'
     NoEcho: 'True'
@@ -384,17 +384,17 @@ Parameters:
     Type: String
   DBBackupRetentionPeriod:
     Default: '7'
-    Description: 'The number of days for which automatic database snapshots are retained.'
+    Description: 'The number of days that automatic database snapshots are retained.'
     Type: String
   DBMultiAZ:
     AllowedValues:
       - 'true'
       - 'false'
     Default: 'true'
-    Description: Specifies if the database instance is a multiple Availability Zone deployment.
+    Description: Specify if the database instance is a multiple Availability Zone deployment.
     Type: String
   DBEngineVersion:
-    Description: Select Database Engine Version
+    Description: The database engine version.
     Type: String
     Default: 11.9
     AllowedValues:
@@ -421,19 +421,19 @@ Parameters:
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
     ConstraintDescription: 'Must begin with a letter and contain only alphanumeric characters.'
     Default: postgresadmin
-    Description: 'The database admin account username.'
+    Description: 'The database admin account user name.'
     MaxLength: '16'
     MinLength: '1'
     Type: String
   DBMasterUserPassword:
-    Description: The database admin account password. Do not end the password with a special character, this wil cause issues connecting to database. Must contain at least 1 uppercase letter, 1 lowercase letter, and a symbol (non / @ " ' ).
+    Description: The database admin account password. To avoid connectivity issues, do not end the password with a special character. Must contain at least 1 uppercase letter, 1 lowercase letter, and a symbol (non / @ " ' ).
     MaxLength: '64'
     MinLength: '8'
     NoEcho: 'True'
     Type: String
   DBPort:
     Default: 5432
-    Description: 'The port the instance will listen for connections on.'
+    Description: 'The port on which the instance listens for connections.'
     Type: Number
     ConstraintDescription: 'Must be in the range [1150-65535].'
     MinValue: 1150
@@ -443,16 +443,16 @@ Parameters:
       - 'true'
       - 'false'
     Default: 'true'
-    Description: 'Enable Amazon DevOps Guru'
+    Description: 'Enable Amazon DevOps Guru.'
     Type: String
   AdministratorAccountId:
     Type: String
-    Description: 'AWS Account Id of the administrator account (the account in which StackSets will be created).'
+    Description: 'AWS Account ID of the administrator account (the account in which StackSets are created).'
     MaxLength: 12
     MinLength: 12
     Default: '000000000000'
   EmailAddress:
-    Description: 'Email address for Amazon DevOps Guru SNS subscription.'
+    Description: 'Email address used for Amazon DevOps Guru SNS subscription.'
     Type: String
     Default: chainlinkuser@email.com
   QSS3BucketName:
