@@ -30,11 +30,11 @@ Each deployment takes about {deployment_time} to complete.
 +
 [cols="1,1"]
 |===
-^|https://fwd.aws/7r3d5?[Deploy {partner-product-short-name} into a new VPC on AWS^]
-^|https://fwd.aws/X8vYB?[View template^]
+^|https://fwd.aws/VVEab?[Deploy {partner-product-short-name} into a new VPC on AWS^]
+^|https://fwd.aws/8bA3e?[View template^]
 
-^|https://fwd.aws/bzmEx?[Deploy {partner-product-short-name} into an existing VPC on AWS^]
-^|https://fwd.aws/4vqpp?[View template^]
+^|https://fwd.aws/Veavz?[Deploy {partner-product-short-name} into an existing VPC on AWS^]
+^|https://fwd.aws/aX4v6?[View template^]
 |===
 +
 
