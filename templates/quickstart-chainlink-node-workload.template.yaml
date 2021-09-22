@@ -101,7 +101,7 @@ Metadata:
       NumBastionHosts:
         default: Number of bastion hosts
       BastionHostName:
-        default: Bastion host name
+        default: Bastion hostname
       BastionTenancy:
         default: Bastion tenancy
       BastionBanner:
@@ -119,7 +119,7 @@ Metadata:
       ChainlinkNodeGUIPassword:
         default: Chainlink node GUI password
       BlockchainNodeUrl:
-        default: Blockchain node websocket URL
+        default: Blockchain node web socket URL
       NodeWalletPassword:
         default: Chainlink node wallet password
       UseSSLCertificate:
@@ -137,9 +137,9 @@ Metadata:
       DBEngineVersion:
         default: Database engine version
       DBMasterUsername:
-        default: Database master user name
+        default: Database primary user name
       DBMasterUserPassword:
-        default: Database master password
+        default: Database primary password
       DBPort:
         default: Database port
       EnableAmazonDevOpsGuru:
@@ -180,7 +180,7 @@ Parameters:
     Description: CIDR block for the VPC.
     Type: String
   VPCID:
-    Description: 'ID of the VPC (e.g., vpc-0343606e)'
+    Description: 'ID of the VPC (for example, vpc-0343606e)'
     Type: 'AWS::EC2::VPC::Id'
   KeyPairName:
     Description: Name of an existing public/private key pair. If you do not have one in this AWS Region,
@@ -284,14 +284,14 @@ Parameters:
     Type: String
   EnableTCPForwarding:
     Type: String
-    Description: To enable TCP forwarding, choose *true*.
+    Description: To allow TCP forwarding, choose *true*.
     Default: 'false'
     AllowedValues:
       - 'true'
       - 'false'
   EnableX11Forwarding:
     Type: String
-    Description: To enable X11 forwarding, choose *true*.
+    Description: To allow X11 forwarding, choose *true*.
     Default: 'false'
     AllowedValues:
       - 'true'
@@ -322,7 +322,7 @@ Parameters:
     Type: String
   BlockchainNodeUrl:
     Default: 'wss://blockchainNodeEndpoint'
-    Description: 'The websocket endpoint for a blockchain node.'
+    Description: 'The web socket endpoint for a blockchain node.'
     MaxLength: '240'
     MinLength: '6'
     Type: String

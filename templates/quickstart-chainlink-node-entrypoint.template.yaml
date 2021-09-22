@@ -104,7 +104,7 @@ Metadata:
       NumBastionHosts:
         default: Number of bastion hosts
       BastionHostName:
-        default: Bastion host name
+        default: Bastion hostname
       BastionTenancy:
         default: Bastion tenancy
       BastionBanner:
@@ -122,7 +122,7 @@ Metadata:
       ChainlinkNodeGUIPassword:
         default: Chainlink node GUI password
       BlockchainNodeUrl:
-        default: Blockchain node websocket URL
+        default: Blockchain node web socket URL
       NodeWalletPassword:
         default: Chainlink node wallet password
       UseSSLCertificate:
@@ -142,9 +142,9 @@ Metadata:
       DBInstanceClass:
         default: Database instance class
       DBMasterUsername:
-        default: Database master user name
+        default: Database primary user name
       DBMasterUserPassword:
-        default: Database master password
+        default: Database primary password
       DBPort:
         default: Database port
       EnableAmazonDevOpsGuru:
@@ -346,7 +346,7 @@ Parameters:
     Type: String
   BlockchainNodeUrl:
     Default: 'wss://blockchainNodeEndpoint'
-    Description: 'The websocket endpoint for a blockchain node.'
+    Description: 'The web socket endpoint for a blockchain node.'
     MaxLength: '240'
     MinLength: '6'
     Type: String
