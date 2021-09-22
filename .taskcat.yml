@@ -27,7 +27,7 @@ project:
     #- us-west-2
 tests:
   default:
-    template: ./templates/quickstart-chainlink-node-main.yaml
+    template: ./templates/quickstart-chainlink-node-entrypoint.template.yaml
     parameters:
       AvailabilityZones: $[taskcat_genaz_2]
       KeyPairName: override
