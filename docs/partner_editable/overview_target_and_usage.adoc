@@ -4,4 +4,4 @@
 
 This guide provides instructions for deploying the {partner-product-short-name} Quick Start reference architecture on the AWS Cloud.
 
-This Quick Start is for users who enterprise users that want to run a highly available and secure {partner-product-short-name}. 
+This Quick Start deploys highly available Chainlink nodes with default parameters and a blockchain to the AWS Cloud. It is for enterprise users who want to run a secure {partner-product-short-name} to provide external resources such as external APIs, tamper-proof price data, and verifiable randomness directly to smart contracts stored on the blockchain. 
