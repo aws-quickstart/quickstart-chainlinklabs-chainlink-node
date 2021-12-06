@@ -459,6 +459,7 @@ Resources:
                 --log-driver=awslogs \
                 --log-opt awslogs-group=ChainlinkLogs \
                 --restart unless-stopped \
+                -u 1000:1000 \
                 --name chainlink \
                 -p 6688:6688 \
                 -v /home/ec2-user/.chainlink:/chainlink \
