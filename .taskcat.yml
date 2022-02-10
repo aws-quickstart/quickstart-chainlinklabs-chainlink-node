@@ -34,7 +34,7 @@ tests:
       ChainlinkNodeGUIPassword:  $[taskcat_genpass_8S]
       NodeWalletPassword:  $[taskcat_genpass_10S]
       DBMasterUserPassword:  $[taskcat_genpass_8S]
-      SSLCertificateARN: ''
+      SSLCertificateARN: override
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
       EnableAmazonDevOpsGuru: 'false'
