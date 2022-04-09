@@ -13,7 +13,7 @@ case $1 in
     chain=4
     contractAddress=0x01BE23585060835E02B77ef475b0Cc51aA1e0709
     ;;
-  xDai-Mainnet )
+  Gnosis-Chain-Mainnet )
     chain=100
     contractAddress=0xE2e73A1c69ecF83F464EFCE6A5be353a37cA09b2
     ;;
@@ -25,9 +25,61 @@ case $1 in
     chain=56
     contractAddress=0x404460c6a5ede2d891e8297795264fde62adbb75
     ;;
+  BSC-Testnet )
+    chain=97
+    contractAddress=0x84b9b910527ad5c03a9ca831909e21e236ea7b06
+    ;;
   Matic-Mainnet )
     chain=137
     contractAddress=0xb0897686c545045afc77cf20ec7a532e3120e0f1
+    ;;
+  Matic-Mumbai-Testnet )
+    chain=80001
+    contractAddress=0x326C977E6efc84E512bB9C30f76E30c160eD06FB
+    ;;
+  Avalanche-Mainnet )
+    chain=43114
+    contractAddress=0x5947BB275c521040051D82396192181b413227A3
+    ;;
+  Avalanche-Fuji-Testnet )
+    chain=43113
+    contractAddress=0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846
+    ;;
+  Fantom-Mainnet )
+    chain=250
+    contractAddress=0x6F43FF82CCA38001B6699a8AC47A2d0E66939407
+    ;;
+  Fantom-Testnet )
+    chain=4002
+    contractAddress=0xfaFedb041c0DD4fA2Dc0d87a6B0979Ee6FA7af5F
+    ;;
+  Arbitrum-Mainnet )
+    chain=42161
+    contractAddress=0xf97f4df75117a78c1A5a0DBb814Af92458539FB4
+    ;;
+  Arbitrum-Rinkeby-Testnet )
+    chain=421611
+    contractAddress=0x615fBe6372676474d9e6933d310469c9b68e9726
+    ;;
+  Optimism-Mainnet )
+    chain=10
+    contractAddress=0x350a791Bfc2C21F9Ed5d10980Dad2e2638ffa7f6
+    ;;
+  Optimism-Kovan-Testnet )
+    chain=69
+    contractAddress=0x4911b761993b9c8c0d14Ba2d86902AF6B0074F5B
+    ;;
+  Harmony-Mainnet )
+    chain=1666600000
+    contractAddress=0x218532a12a389a4a92fC0C5Fb22901D1c19198aA
+    ;;
+  Harmony-Testnet )
+    chain=1666700000
+    contractAddress=0x8b12Ac23BFe11cAb03a634C1F117D64a7f2cFD3e
+    ;;
+  Moonriver-Mainnet )
+    chain=1285
+    contractAddress=0x8b12Ac23BFe11cAb03a634C1F117D64a7f2cFD3e
     ;;
 esac
 

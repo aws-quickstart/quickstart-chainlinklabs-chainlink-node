@@ -325,10 +325,23 @@ Parameters:
       - ETH-Mainnet
       - Kovan-ETH-Testnet
       - Rinkeby-ETH-Testnet
-      - xDai-Mainnet
+      - Gnosis-Chain-Mainnet
       - Heco-Mainnet
       - BSC-Mainnet
+      - BSC-Testnet
       - Matic-Mainnet
+      - Matic-Mumbai-Testnet
+      - Avalanche-Mainnet
+      - Avalanche-Fuji-Testnet
+      - Fantom-Mainnet
+      - Fantom-Testnet
+      - Arbitrum-Mainnet
+      - Arbitrum-Rinkeby-Testnet
+      - Optimism-Mainnet
+      - Optimism-Kovan-Testnet
+      - Harmony-Mainnet
+      - Harmony-Testnet
+      - Moonriver-Mainnet
     Default: Kovan-ETH-Testnet
     Description: 'Blockchain network to run Chainlink node.'
     Type: String
