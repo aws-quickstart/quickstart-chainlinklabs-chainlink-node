@@ -1,4 +1,4 @@
-## ChainlinkLabds ChainLink Node on the AWS Cloud—Quick Start
+## ChainlinkLabs ChainLink Node on the AWS Cloud—Quick Start
 
 For architectural details, step-by-step instructions, and customization options, see the [deployment guide](http://aws-quickstart.github.io/quickstart-chainlinklabs-chainlink-node/).
 
