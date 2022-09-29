@@ -5,13 +5,9 @@ case $1 in
     chain=1
     contractAddress=0x514910771af9ca656af840dff83e8264ecf986ca
     ;;
-  Kovan-ETH-Testnet )
-    chain=42
-    contractAddress=0xa36085F69e2889c224210F603D836748e7dC0088
-    ;;
-  Rinkeby-ETH-Testnet )
-    chain=4
-    contractAddress=0x01BE23585060835E02B77ef475b0Cc51aA1e0709
+  Goerli-ETH-Testnet )
+    chain=5
+    contractAddress=0x326C977E6efc84E512bB9C30f76E30c160eD06FB
     ;;
   Gnosis-Chain-Mainnet )
     chain=100
@@ -57,17 +53,17 @@ case $1 in
     chain=42161
     contractAddress=0xf97f4df75117a78c1A5a0DBb814Af92458539FB4
     ;;
-  Arbitrum-Rinkeby-Testnet )
-    chain=421611
-    contractAddress=0x615fBe6372676474d9e6933d310469c9b68e9726
+  Arbitrum-Goerli-Testnet )
+    chain=421613
+    contractAddress=0xd14838a68e8afbade5efb411d5871ea0011afd28
     ;;
   Optimism-Mainnet )
     chain=10
     contractAddress=0x350a791Bfc2C21F9Ed5d10980Dad2e2638ffa7f6
     ;;
-  Optimism-Kovan-Testnet )
-    chain=69
-    contractAddress=0x4911b761993b9c8c0d14Ba2d86902AF6B0074F5B
+  Optimism-Goerli-Testnet )
+    chain=420
+    contractAddress=0xdc2CC710e42857672E7907CF474a69B63B93089f
     ;;
   Harmony-Mainnet )
     chain=1666600000

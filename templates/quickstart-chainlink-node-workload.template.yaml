@@ -299,13 +299,25 @@ Parameters:
   BlockchainNetwork:
     AllowedValues:
       - ETH-Mainnet
-      - Kovan-ETH-Testnet
-      - Rinkeby-ETH-Testnet
-      - xDai-Mainnet
+      - Goerli-ETH-Testnet
+      - Gnosis-Chain-Mainnet
       - Heco-Mainnet
       - BSC-Mainnet
+      - BSC-Testnet
       - Matic-Mainnet
-    Default: Kovan-ETH-Testnet
+      - Matic-Mumbai-Testnet
+      - Avalanche-Mainnet
+      - Avalanche-Fuji-Testnet
+      - Fantom-Mainnet
+      - Fantom-Testnet
+      - Arbitrum-Mainnet
+      - Arbitrum-Goerli-Testnet
+      - Optimism-Mainnet
+      - Optimism-Goerli-Testnet
+      - Harmony-Mainnet
+      - Harmony-Testnet
+      - Moonriver-Mainnet
+    Default: Goerli-ETH-Testnet
     Description: 'Blockchain network to run the Chainlink node.'
     Type: String
   ChainlinkNodeGUIEmail:
