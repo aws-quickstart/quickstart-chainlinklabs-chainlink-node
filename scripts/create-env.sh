@@ -113,11 +113,11 @@ DATABASE_URL=postgresql://$3:$4@$5:$6/$7
 DATABASE_TIMEOUT=0
 DATABASE_LOCKING_MODE=lease
 
-## Web Server (enabled by default) ##
+### Web Server (enabled by default) ###
 CHAINLINK_TLS_PORT=0
 SECURE_COOKIES=false
 
-## Web Server TLS (disabled by default) ##
+### Web Server TLS (disabled by default) ###
 # CHAINLINK_TLS_PORT=6689
 # SECURE_COOKIES=true
 # TLS_CERT_PATH=/chainlink/tls/server.crt
