@@ -182,13 +182,28 @@ Parameters:
     Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
   BlockchainNetwork:
     AllowedValues:
-      - ETH-Mainnet
-      - Kovan-ETH-Testnet
-      - Rinkeby-ETH-Testnet
-      - xDai-Mainnet
-      - Heco-Mainnet
+      - Ethereum-Mainnet
+      - Ethereum-Goerli-Testnet
       - BSC-Mainnet
+      - BSC-Testnet
       - Matic-Mainnet
+      - Matic-Mumbai-Testnet
+      - RSK-Mainnet
+      - Gnosis-Chain-Mainnet
+      - Avalanche-Mainnet
+      - Avalanche-Fuji-Testnet
+      - Fantom-Mainnet
+      - Fantom-Testnet
+      - Arbitrum-Mainnet
+      - Arbitrum-Rinkeby-Testnet
+      - Heco-Mainnet
+      - Optimism-Mainnet
+      - Optimism-Goerli-Testnet
+      - Harmony-Mainnet
+      - Moonriver-Mainnet
+      - Moonbeam-Mainnet
+      - Metis-Mainnet
+      - Klaytn-Baobab-Testnet
     Description: 'Blockchain Network to run Chainlink Node.'
     Type: String
   ChainlinkNodeGUIEmail:
