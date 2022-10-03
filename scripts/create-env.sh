@@ -53,7 +53,7 @@ case $1 in
     chain=42161
     contractAddress=0xf97f4df75117a78c1A5a0DBb814Af92458539FB4
     ;;
-  Arbitrum-Rinkeby-Testnet )
+  Arbitrum-Goerli-Testnet )
     chain=421613
     contractAddress=0xd14838a68e8afbade5efb411d5871ea0011afd28
     ;;
