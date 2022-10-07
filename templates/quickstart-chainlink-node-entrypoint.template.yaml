@@ -322,27 +322,29 @@ Parameters:
       - 'false'
   BlockchainNetwork:
     AllowedValues:
-      - ETH-Mainnet
-      - Kovan-ETH-Testnet
-      - Rinkeby-ETH-Testnet
-      - Gnosis-Chain-Mainnet
-      - Heco-Mainnet
+      - Ethereum-Mainnet
+      - Ethereum-Goerli-Testnet
       - BSC-Mainnet
       - BSC-Testnet
       - Matic-Mainnet
       - Matic-Mumbai-Testnet
+      - RSK-Mainnet
+      - Gnosis-Chain-Mainnet
       - Avalanche-Mainnet
       - Avalanche-Fuji-Testnet
       - Fantom-Mainnet
       - Fantom-Testnet
       - Arbitrum-Mainnet
-      - Arbitrum-Rinkeby-Testnet
+      - Arbitrum-Goerli-Testnet
+      - Heco-Mainnet
       - Optimism-Mainnet
-      - Optimism-Kovan-Testnet
+      - Optimism-Goerli-Testnet
       - Harmony-Mainnet
-      - Harmony-Testnet
       - Moonriver-Mainnet
-    Default: Kovan-ETH-Testnet
+      - Moonbeam-Mainnet
+      - Metis-Mainnet
+      - Klaytn-Baobab-Testnet
+    Default: Ethereum-Goerli-Testnet
     Description: 'Blockchain network to run Chainlink node.'
     Type: String
   ChainlinkNodeGUIEmail:
@@ -366,7 +368,7 @@ Parameters:
   NodeWalletPassword:
     Description: 'Node wallet password must contain 3 uppercase letters, 3 lowercase letters, 3 numbers, and 3 special characters.'
     MaxLength: '32'
-    MinLength: '9'
+    MinLength: '12'
     NoEcho: 'True'
     Type: String
   UseSSLCertificate:

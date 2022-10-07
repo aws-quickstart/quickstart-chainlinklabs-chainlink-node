@@ -1,41 +1,37 @@
 #!/bin/bash
 
 case $1 in
-  ETH-Mainnet )
+  Ethereum-Mainnet )
     chain=1
-    contractAddress=0x514910771af9ca656af840dff83e8264ecf986ca
+    contractAddress=0x514910771AF9Ca656af840dff83E8264EcF986CA
     ;;
-  Kovan-ETH-Testnet )
-    chain=42
-    contractAddress=0xa36085F69e2889c224210F603D836748e7dC0088
-    ;;
-  Rinkeby-ETH-Testnet )
-    chain=4
-    contractAddress=0x01BE23585060835E02B77ef475b0Cc51aA1e0709
-    ;;
-  Gnosis-Chain-Mainnet )
-    chain=100
-    contractAddress=0xE2e73A1c69ecF83F464EFCE6A5be353a37cA09b2
-    ;;
-  Heco-Mainnet )
-    chain=128
-    contractAddress=0x9e004545c59D359F6B7BFB06a26390b087717b42
+  Ethereum-Goerli-Testnet )
+    chain=5
+    contractAddress=0x326C977E6efc84E512bB9C30f76E30c160eD06FB
     ;;
   BSC-Mainnet )
     chain=56
-    contractAddress=0x404460c6a5ede2d891e8297795264fde62adbb75
+    contractAddress=0x404460C6A5EdE2D891e8297795264fDe62ADBB75
     ;;
   BSC-Testnet )
     chain=97
-    contractAddress=0x84b9b910527ad5c03a9ca831909e21e236ea7b06
+    contractAddress=0x84b9B910527Ad5C03A9Ca831909E21e236EA7b06
     ;;
   Matic-Mainnet )
     chain=137
-    contractAddress=0xb0897686c545045afc77cf20ec7a532e3120e0f1
+    contractAddress=0xb0897686c545045aFc77CF20eC7A532E3120E0F1
     ;;
   Matic-Mumbai-Testnet )
     chain=80001
     contractAddress=0x326C977E6efc84E512bB9C30f76E30c160eD06FB
+    ;;
+  RSK-Mainnet )
+    chain=30
+    contractAddress=0x14ADAE34beF7Ca957ce2DDe5AdD97EA050123827
+    ;;
+  Gnosis-Chain-Mainnet )
+    chain=100
+    contractAddress=0xE2e73A1c69ecF83F464EFCE6A5be353a37cA09b2
     ;;
   Avalanche-Mainnet )
     chain=43114
@@ -57,87 +53,109 @@ case $1 in
     chain=42161
     contractAddress=0xf97f4df75117a78c1A5a0DBb814Af92458539FB4
     ;;
-  Arbitrum-Rinkeby-Testnet )
-    chain=421611
-    contractAddress=0x615fBe6372676474d9e6933d310469c9b68e9726
+  Arbitrum-Goerli-Testnet )
+    chain=421613
+    contractAddress=0xd14838a68e8afbade5efb411d5871ea0011afd28
+    ;;
+  Heco-Mainnet )
+    chain=128
+    contractAddress=0x9e004545c59D359F6B7BFB06a26390b087717b42
     ;;
   Optimism-Mainnet )
     chain=10
     contractAddress=0x350a791Bfc2C21F9Ed5d10980Dad2e2638ffa7f6
     ;;
-  Optimism-Kovan-Testnet )
-    chain=69
-    contractAddress=0x4911b761993b9c8c0d14Ba2d86902AF6B0074F5B
+  Optimism-Goerli-Testnet )
+    chain=420
+    contractAddress=0xdc2CC710e42857672E7907CF474a69B63B93089f
     ;;
   Harmony-Mainnet )
     chain=1666600000
     contractAddress=0x218532a12a389a4a92fC0C5Fb22901D1c19198aA
     ;;
-  Harmony-Testnet )
-    chain=1666700000
-    contractAddress=0x8b12Ac23BFe11cAb03a634C1F117D64a7f2cFD3e
-    ;;
   Moonriver-Mainnet )
     chain=1285
     contractAddress=0x8b12Ac23BFe11cAb03a634C1F117D64a7f2cFD3e
     ;;
+  Moonbeam-Mainnet )
+    chain=1284
+    contractAddress=0x012414A392F9FA442a3109f1320c439C45518aC3
+    ;;
+  Metis-Mainnet )
+    chain=1088
+    contractAddress=0x79892E8A3Aea66C8F6893fa49eC6208ef07EC046
+    ;;
+  Klaytn-Baobab-Testnet )
+    chain=1001
+    contractAddress=0x04c5046A1f4E3fFf094c26dFCAA75eF293932f18
+    ;;
 esac
 
 printf "# Chainlink Environment file
+### Node Config/Info ###
 ROOT=/chainlink
+ALLOW_ORIGINS=*
+
+### Logging ###
+JSON_CONSOLE=true
 LOG_LEVEL=debug
+
+### EVM Chain Info ###
 ETH_CHAIN_ID=${chain}
 LINK_CONTRACT_ADDRESS=${contractAddress}
-ALLOW_ORIGINS=*
-MINIMUM_CONTRACT_PAYMENT_LINK_JUELS=1000000000000
-DEFAULT_HTTP_ALLOW_UNRESTRICTED_NETWORK_ACCESS=true
-JSON_CONSOLE=true
-
-# Ethereum Mainnet Variables
-MIN_OUTGOING_CONFIRMATIONS=2
-MIN_INCOMING_CONFIRMATIONS=2
 ETH_URL=$2
+# ETH_HTTP_URL=
+# ETH_SECONDARY_URLS=
+# EVM_NODES=
 
-# Database Values
+### Database ###
 DATABASE_URL=postgresql://$3:$4@$5:$6/$7
 DATABASE_TIMEOUT=0
+DATABASE_LOCKING_MODE=lease
 
-# Settings for HTTPS (enable these or the ones below for http)
-#CHAINLINK_TLS_PORT=6689
-#SECURE_COOKIES=true
-#TLS_CERT_PATH=/chainlink/tls/server.crt
-#TLS_KEY_PATH=/chainlink/tls/server.key
-
-# Setting for HTTP
+### Web Server (enabled by default) ###
 CHAINLINK_TLS_PORT=0
 SECURE_COOKIES=false
 
-# Transaction Improvements
-GAS_ESTIMATOR_MODE=BlockHistory
-GAS_UPDATER_TRANSACTION_PERCENTILE=71
-BLOCK_HISTORY_ESTIMATOR_BLOCK_HISTORY_SIZE=8
-ETH_GAS_BUMP_THRESHOLD=2
-ETH_GAS_BUMP_WEI=20000000000
-ETH_GAS_BUMP_PERCENT=50
-ETH_BALANCE_MONITOR_BLOCK_DELAY=3
-ENABLE_BULLETPROOF_TX_MANAGER=true
+### Web Server TLS (disabled by default) ###
+# CHAINLINK_TLS_PORT=6689
+# SECURE_COOKIES=true
+# TLS_CERT_PATH=/chainlink/tls/server.crt
+# TLS_KEY_PATH=/chainlink/tls/server.key
 
-# OCR Variables (OCR disabled by default)
-#OCR_KEY_BUNDLE_ID=
-#P2P_PEER_ID=
-#OCR_TRANSMITTER_ADDRESS=
-#FEATURE_OFFCHAIN_REPORTING=true
-#OCR_TRACE_LOGGING=true
+### Transaction Manager ###
+MIN_OUTGOING_CONFIRMATIONS=3
+# MIN_INCOMING_CONFIRMATIONS=2
 
-# LISTENING_PORT OR ANNOUNCE_PORT AND ANNOUNCE_IP (OCR)
-#P2P_LISTEN_PORT=
+### Gas Bumper ###
+# GAS_UPDATER_ENABLED=true
+# GAS_UPDATER_TRANSACTION_PERCENTILE=71
+# ETH_GAS_PRICE_DEFAULT=1000000000
+# ETH_GAS_BUMP_THRESHOLD=5
+# ETH_GAS_BUMP_WEI=20000000000
+# ETH_GAS_BUMP_PERCENT=50
+# ETH_MAX_GAS_PRICE_WEI=2500000000000
 
-# Must Specify Both of Below OR LISTENING_PORT (OCR)
-#P2P_ANNOUNCE_IP=
-#P2P_ANNOUNCE_PORT=
+### OCR (disabled by default) ###
+# OCR_TRACE_LOGGING=true
+# FEATURE_OFFCHAIN_REPORTING=true
+# OCR_KEY_BUNDLE_ID=
+# OCR_TRANSMITTER_ADDRESS=
+# P2P_NETWORKING_STACK=
 
-# Bootstrap Nodes (OCR)
-#P2P_BOOTSTRAP_PEERS=" > /home/ec2-user/.chainlink/.env
+### OCR Networking Stack V1 ###
+# P2P_ANNOUNCE_IP=
+# P2P_ANNOUNCE_PORT=
+# P2P_BOOTSTRAP_PEERS=
+# P2P_LISTEN_IP=
+# P2P_LISTEN_PORT=
+# P2P_PEER_ID=
+
+### OCR Networking Stack V2 ###
+# P2PV2_ANNOUNCE_ADDRESSES=
+# P2PV2_BOOTSTRAPPERS=
+# P2PV2_LISTEN_ADDRESSES=
+" > /home/ec2-user/.chainlink/.env
 
 echo
 echo -e "Created environment variables file"
