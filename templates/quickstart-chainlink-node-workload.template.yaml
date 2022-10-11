@@ -330,9 +330,9 @@ Parameters:
     MinLength: '1'
     Type: String
   ChainlinkNodeGUIPassword:
-    Description: 'The Chainlink node GUI password.'
-    MaxLength: '64'
-    MinLength: '8'
+    Description: 'The Chainlink node GUI password, must contain 4 uppercase letters, 4 lowercase letters, 4 numbers, and 4 special characters.'
+    MaxLength: '50'
+    MinLength: '16'
     NoEcho: 'True'
     Type: String
   BlockchainNodeUrl:
@@ -342,9 +342,9 @@ Parameters:
     MinLength: '6'
     Type: String
   NodeWalletPassword:
-    Description: 'Node wallet password must contain 3 uppercase letters, 3 lowercase letters, 3 numbers, and 3 special characters.'
-    MaxLength: '32'
-    MinLength: '12'
+    Description: 'Node wallet password, must contain 4 uppercase letters, 4 lowercase letters, 4 numbers, and 4 special characters.'
+    MaxLength: '50'
+    MinLength: '16'
     NoEcho: 'True'
     Type: String
   UseSSLCertificate:
