@@ -210,14 +210,14 @@ Parameters:
     Description: 'The Chainlink Node GUI Email.'
     Type: String
   ChainlinkNodeGUIPassword:
-    Description: 'The Chainlink Node GUI Password.'
+    Description: 'The Chainlink node GUI password, must contain 4 uppercase letters, 4 lowercase letters, 4 numbers, and 4 special characters.'
     NoEcho: 'True'
     Type: String
   BlockchainNodeUrl:
     Description: 'Please provide websocket endpoint for a Blockchain node'
     Type: String
   NodeWalletPassword:
-    Description: 'Node Wallet password must container 3 capital letters, 3 lowercase letters, 3 numbers, and 3 special characters.'
+    Description: 'Node wallet password, must contain 4 uppercase letters, 4 lowercase letters, 4 numbers, and 4 special characters.'
     NoEcho: 'True'
     Type: String
   UseSSLCertificate:
