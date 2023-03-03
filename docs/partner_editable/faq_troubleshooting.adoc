@@ -47,3 +47,6 @@ ${psqlDb}
 
 *A.* For more information, see https://docs.chain.link/docs/best-practices-aws/[Best Practices for Deploying Nodes on AWS].
 
+*Q.* Why is the {partner-product-short-name} deployment using Chainlink core version 1.12.0?
+
+*A.* The Quick Start deploys the Chainlink node infrastructure using environment variables. Starting with Chainlink core version 2.X.X+, environment variables will be deprecated in place of V2 TOML configuration and secret values. See https://github.com/smartcontractkit/chainlink/blob/develop/docs/CONFIG.md[TOML configuration values] and https://github.com/smartcontractkit/chainlink/blob/develop/docs/SECRETS.md[TOML secret configuration values].

@@ -469,16 +469,16 @@ Resources:
               command: docker pull smartcontract/chainlink:0.9.10
             04-run-chainlink-docker:
               command: |
-                latestimage=$(curl -s -S "https://registry.hub.docker.com/v2/repositories/smartcontract/chainlink/tags/" | jq -r '."results"[]["name"]' | head -n 1)
                 docker run -d \
                 --log-driver=awslogs \
                 --log-opt awslogs-group=ChainlinkLogs \
                 --restart unless-stopped \
-                -u 1000:1000 \
+                -u 14933:14933 \
                 --name chainlink \
                 -p 6688:6688 \
                 -v /home/ec2-user/.chainlink:/chainlink \
-                --env-file=/home/ec2-user/.chainlink/.env  smartcontract/chainlink:${latestimage} local n \
+                --env-file=/home/ec2-user/.chainlink/.env \
+                public.ecr.aws/chainlink/chainlink:1.12.0 local n \
                 -p /chainlink/.password \
                 -a /chainlink/.api
               cwd: "/home/ec2-user/.chainlink"
