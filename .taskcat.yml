@@ -31,9 +31,9 @@ tests:
     parameters:
       AvailabilityZones: $[taskcat_genaz_2]
       KeyPairName: override
-      ChainlinkNodeGUIPassword:  $[taskcat_genpass_8S]
-      NodeWalletPassword:  $[taskcat_genpass_10S]
-      DBMasterUserPassword:  $[taskcat_genpass_8S]
+      ChainlinkNodeGUIPassword:  $[taskcat_genpass_16S]
+      NodeWalletPassword:  $[taskcat_genpass_16S]
+      DBMasterUserPassword:  $[taskcat_genpass_16S]
       SSLCertificateARN: ''
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
