@@ -55,7 +55,7 @@ cd /home/ec2-user/.chainlink && docker run -d \
 --log-driver=awslogs \
 --log-opt awslogs-group=ChainlinkLogs \
 --restart unless-stopped \
--u 14933:14933 \
+-u 1000:1000 \
 --name chainlink \
 -p 6688:6688 \
 -v /home/ec2-user/.chainlink:/chainlink \
