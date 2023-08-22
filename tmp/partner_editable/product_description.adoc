@@ -1,0 +1,9 @@
+// Replace the content in <>
+// Briefly describe the software. Use consistent and clear branding. 
+// Include the benefits of using the software on AWS, and provide details on usage scenarios.
+
+Chainlink is a data oracle that enables smart contracts on any blockchain to take advantage of extensive off-chain resources, such as tamper-proof price data, verifiable randomness, and external APIs.
+
+When deployed to a blockchain, a smart contract is a set of instructions that can be run without intervention from third parties. The code of a smart contract determines how it responds to input, just like the code of any other computer program.
+
+The Chainlink node is middleware that operates between the blockchain and external data. Node operators are able to run their Chainlink nodes with oracle job specifications, or specs, which contain the sequential tasks that the node must perform to produce a final result. The Chainlink node provides external data directly to smart contracts.

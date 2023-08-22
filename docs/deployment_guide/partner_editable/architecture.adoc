@@ -3,26 +3,28 @@
 Deploying this Partner Solution with default parameters builds the following {partner-product-short-name} environment in the
 AWS Cloud.
 
-// Replace this example diagram with your own. Follow our wiki guidelines: https://w.amazon.com/bin/view/AWS_Quick_Starts/Process_for_PSAs/#HPrepareyourarchitecturediagram. Upload your source PowerPoint file to the GitHub {deployment name}/docs/images/ directory in its repository.
-
 [#architecture1]
 .Partner Solution architecture for {partner-product-short-name} on AWS
-image::../docs/deployment_guide/images/architecture_diagram.png[Architecture]
+image::../docs/deployment_guide/images/chainlink-node-architecture-diagram.png[Architecture]
 
-As shown in <<architecture1>>, this Partner Solution sets up the following:
+As shown in <<architecture1>>, the Quick Start sets up the following:
 
 * A highly available architecture that spans two Availability Zones.*
-* A virtual private cloud (VPC) configured with public and private subnets, according to AWS
+* A VPC configured with public and private subnets, according to AWS
 best practices, to provide you with your own virtual network on AWS.*
 * In the public subnets:
+** An internet gateway to allow access to the internet.*
 ** Managed network address translation (NAT) gateways to allow outbound
-internet access for resources in the private subnets.*
+internet access for the {partner-product-short-name} instances in the private subnets.*
 ** A Linux bastion host in an Auto Scaling group to allow inbound Secure
-Shell (SSH) access to Amazon Elastic Compute Cloud (Amazon EC2) instances in public and private subnets.*
+Shell (SSH) access to Amazon Elastic Compute Cloud (Amazon EC2) instances in public and private subnets.
 * In the private subnets:
-** <item>.
-** <item>.
-// Add bullet points for any additional components that are included in the deployment. Ensure that the additional components are shown in the architecture diagram. End each bullet with a period.
-* <describe any additional components>.
+** Two Chainlink nodes in an Auto Scaling group that contains security groups for fine-grained inbound access control.
+** An Amazon Relational Database Service (Amazon RDS) PostgreSQL managed database instance.
+* An Elastic Load Balancing (ELB) load balancer to access the {partner-product-short-name} user interface.
+* Amazon CloudWatch logging of Chainlink nodes.
+* AWS Key Management Service (AWS KMS) resources with both AWS managed and customer managed keys.
+* AWS Secrets Manager to store credentials.
+* Amazon DevOps Guru tracking of your {partner-product-short-name} stack.
 
-[.small]#* The template that deploys this Partner Solution into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.#
+[.small]#* The template that deploys the Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.#
