@@ -14,7 +14,7 @@ ssh ec2-user@<chainlink_node_internal_ip> -L 6688:localhost:6688
 ....
 
 === Fulfill requests with the Chainlink node
-After the Quick Start is deployed, your Chainlink node is ready to interact with smart contracts and fulfill requests. For more information, see https://docs.chain.link/docs/fulfilling-requests/[Fulfilling Requests^].
+After the Partner Solution is deployed, your Chainlink node is ready to interact with smart contracts and fulfill requests. For more information, see https://docs.chain.link/docs/fulfilling-requests/[Fulfilling Requests^].
 
 === Work with external adapters
 Chainlink enables integration of custom computations and specialized APIs using external adapters. The Chainlink node communicates with external adapter services via an API using a JSON specification. To get started, see https://docs.chain.link/docs/external-adapters/[External Adapters Introduction^].
