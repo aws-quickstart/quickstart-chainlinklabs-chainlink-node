@@ -7,3 +7,6 @@
 [submodule "submodules/quickstart-amazon-aurora-postgresql"]
 	path = submodules/quickstart-amazon-aurora-postgresql
 	url = https://github.com/aws-quickstart/quickstart-amazon-aurora-postgresql.git
+[submodule "docs/boilerplate"]
+	path = docs/boilerplate
+	url = https://github.com/aws-ia/aws-ia-documentation-base-common.git
