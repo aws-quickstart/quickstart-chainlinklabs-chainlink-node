@@ -1,0 +1,14 @@
+:partner-solution-project-name: quickstart-chainlinklabs-chainlink-node
+:partner-solution-github-org: aws-quickstart
+:partner-product-name: Chainlink Node
+:partner-product-short-name: Chainlink Node
+:partner-company-name: Chainlink Labs
+:doc-month: September
+:doc-year: 2021
+:partner-contributors: David Dang, Rodger Johnson, {partner-company-name}
+// :other-contributors: Akua Mansa, Trek10
+:aws-contributors: Vijay Krishnan, AWS Solutions Architect
+:aws-ia-contributors: Troy Ameigh, AWS Integration & Automation team
+:deployment_time: 45 minutes
+:default_deployment_region: us-east-1
+// :private_repo:

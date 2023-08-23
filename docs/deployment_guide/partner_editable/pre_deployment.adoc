@@ -1,0 +1,25 @@
+== Predeployment steps
+
+. Create an AWS account at https://aws.amazon.com by
+following the on-screen instructions.
+
+. Create a key pair in your preferred AWS Region.
+
+. If using a domain and SSL certificate, create a public certificate using AWS Certificate Manager (ACM) in your preferred Region.
+
+. Run a blockchain client or use a third-party client. If using a third-party Ethereum client, you can use the web socket endpoint from https://infura.io/docs/ethereum/wss/introduction.md[Infura^] or https://docs.fiews.io/docs/getting-started[Fiews^]. For other Ethereum clients, see https://docs.chain.link/docs/run-an-ethereum-client/[Run an Ethereum Client^].
+
+. If using an existing VPC, make sure that it contains two public subnets, two private subnets, an internet gateway, NAT gateways, and route tables. 
++
+WARNING: Make sure that the private subnets are in different Availability Zones. These subnets require NAT gateways in their route tables to allow instances to communicate with other Chainlink nodes without exposing them to the internet.
+
+. Make sure that you are familiar with networking, DevOps, and https://docs.chain.link/docs/running-a-chainlink-node/[running Chainlink nodes^]. 
+
+. Familiarize yourself with the following AWS services:
+
+* https://aws.amazon.com/ec2/[Amazon EC2^]
+* https://aws.amazon.com/vpc/[Amazon VPC^]
+* https://aws.amazon.com/cloudwatch/[Amazon CloudWatch^]
+* https://aws.amazon.com/devops-guru/[Amazon DevOps Guru^]
+* https://aws.amazon.com/rds/aurora/?aurora-whats-new.sort-by=item.additionalFields.postDateTime&aurora-whats-new.sort-order=desc[Amazon Aurora PostgreSQL^]
+* https://aws.amazon.com/cloudformation/[AWS CloudFormation^]

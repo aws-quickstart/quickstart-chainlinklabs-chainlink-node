@@ -1,0 +1,39 @@
+For troubleshooting common Partner Solution issues, refer to the https://fwd.aws/rA69w?[AWS Partner Solution General Information Guide^] and https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html[Troubleshooting CloudFormation^].
+
+=== I encountered a CREATE_FAILED error when I launched the Partner Solution.
+
+If AWS CloudFormation fails to create the stack, relaunch the template with *Rollback on failure* set to *Disabled*. This setting is under *Advanced* in the AWS CloudFormation console on the *Configure stack options* page. With this setting, the stack’s state is retained, and the instance keeps running so that you can troubleshoot the issue. (For Windows, look at the log files in `%ProgramFiles%\Amazon\EC2ConfigService` and `C:\cfn\log`.)
+
+WARNING: When you set *Rollback on failure* to *Disabled*, you continue to incur AWS charges for this stack. Delete the stack when you finish troubleshooting.
+
+=== I encountered a size-limitation error when I deployed the AWS CloudFormation templates.
+
+Launch the Partner Solution templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a location other than an S3 bucket, you might encounter template-size limitations. For more information, see http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html[AWS CloudFormation quotas^].
+
+=== What other environment variables can I add to my Chainlink node?
+
+For a list of environment variables and their explanations, refer to https://docs.chain.link/docs/configuration-variables/[Configuration Variables^].
+
+=== I encountered an 'Error reading password: open /chainlink/.password: no such file or directory' error message when starting my Chainlink node.
+
+Make sure that the .password files exist inside the Chainlink root directory. If the .password file does not exist, run the following command to create the .password file:
+
+....
+cd /home/ec2-user/.chainlink/ && ./create-password.sh \
+$(aws secretsmanager get-secret-value --secret-id WalletSecret --query "SecretString" --output text)
+....
+
+=== I encountered a 'Creating application: parse "XXXXXX": invalid URI for request' error message when starting my Chainlink node.
+
+This error typically happens when a parsing error exists within the PostgreSQL connection string (postgresql://) in the DATABASE_URL variable. Double-check the .env file for any errors in format or spelling. You can manually edit the connection string or run the following command to create a new .env file:
+
+....
+cd /home/ec2-user/.chainlink/ && ./create-env.sh \
+${chainNetwork} \
+${blockchainNodeUrl} \
+${psqlUser} \
+$(aws secretsmanager get-secret-value --secret-id DBSecret --query "SecretString" --output text) \
+${psqlHostname} \
+${psqlPort} \
+${psqlDb}
+....

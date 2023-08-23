@@ -1,0 +1,9 @@
+This guide covers the information you need to deploy the {partner-product-name} Partner Solution in the AWS Cloud.
+
+This Partner Solution deploys highly available https://docs.chain.link/docs/running-a-chainlink-node/[Chainlink nodes^] with default parameters and a blockchain to the AWS Cloud. It is for enterprise users who want to run a secure Chainlink node to provide external resources such as external APIs, tamper-proof price data, and verifiable randomness directly to smart contracts stored on the blockchain.
+
+Chainlink is a data oracle that enables smart contracts on any blockchain to take advantage of extensive off-chain resources, such as tamper-proof price data, verifiable randomness, and external APIs.
+
+When deployed to a blockchain, a smart contract is a set of instructions that can be run without intervention from third parties. The code of a smart contract determines how it responds to input, just like the code of any other computer program.
+
+The Chainlink node is middleware that operates between the blockchain and external data. Node operators are able to run their Chainlink nodes with oracle job specifications, or specs, which contain the sequential tasks that the node must perform to produce a final result. The Chainlink node provides external data directly to smart contracts.
